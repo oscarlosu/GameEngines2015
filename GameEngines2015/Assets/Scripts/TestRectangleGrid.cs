@@ -11,15 +11,9 @@ public class TestRectangleGrid : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        
-        MyGrid.SetGridSize(Width, Depth, Height);
-        
-        MyGrid.Place(Instantiate(TestObject), X, Y, Layer);
-        MyGrid.Place(Instantiate(TestObject), X, Y, Layer + 2);
-        MyGrid.Place(Instantiate(TestObject), X+2, Y, Layer);
-        MyGrid.Place(Instantiate(TestObject), X, Y + 1, Layer);
-        MyGrid.Place(Instantiate(TestObject), X, Y + 1, Layer + 1);
 
+        MyGrid.SetGridSize(Width, Depth, Height);
+        MyGrid.FillRect(TestObject, 0, 0, 0, Width - 1, Depth - 1, Height - 1);
         //MyGrid.SetGridSize(1, 2, 1);
     }
 
