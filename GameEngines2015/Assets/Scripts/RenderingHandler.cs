@@ -23,45 +23,67 @@ public class RenderingHandler : MonoBehaviour
         Vector2 newFirst = FirstCellXY();
         Vector2 newLast = LastCellXY();
         Vector2 newDif = newLast - newFirst;
-        if(dif == newDif)
+        if(first != newFirst || last != newLast)
         {
-            // TEST
-            //Load();
-            //return;
-            // Move right
-            for (int x = (int)first.x; x < newFirst.x; ++x)
+            if (dif == newDif)
             {
-                UpdateColumn(x, x + (int)dif.x);
-            }
-            // Move left
-            for (int x = (int)newFirst.x; x < first.x; ++x)
-            {
-                UpdateColumn(x + (int)dif.x, x);
-            }
-            first.x = newFirst.x;
-            last.x = newLast.x;
+                // TEST
+                //Load();
+                //return;
+                // Move right
+                for (int x = (int)first.x; x < newFirst.x; ++x)
+                {
+                    MoveColumn(x, x + (int)dif.x);
+                }
+                // Move left
+                for (int x = (int)newFirst.x; x < first.x; ++x)
+                {
+                    MoveColumn(x + (int)dif.x, x);
+                }
+                first.x = newFirst.x;
+                last.x = newLast.x;
 
-            // Move up
-            for (int y = (int)first.y; y < newFirst.y; ++y)
-            {
-                UpdateRow(y, y + (int)dif.y);
+                // Move up
+                for (int y = (int)first.y; y < newFirst.y; ++y)
+                {
+                    MoveRow(y, y + (int)dif.y);
+                }
+                // Move down
+                for (int y = (int)newFirst.y; y < first.y; ++y)
+                {
+                    MoveRow(y + (int)dif.y, y);
+                }
+                // Update first and last
+                first.y = newFirst.y;
+                last.y = newLast.y;
+                //dif = newDif;
             }
-            // Move down
-            for (int y = (int)newFirst.y; y < first.y; ++y)
+            else
             {
-                UpdateRow(y + (int)dif.y, y);
+                Debug.Log("Zoom");
+                Load();
             }
-            // Update first and last
-            first.y = newFirst.y;
-            last.y = newLast.y;
-            //dif = newDif;
         }
-        else
+    }
+    public void UpdateCell(int x, int y, int layer)
+    {
+        GameObject obj;
+        if(renderers.TryGetValue(new Vector3(x, y, layer), out obj))
         {
-            Load();
+            // Read new sprite from HandledGrid
+            short tileID;
+            if(HandledGrid.TryGetTile(x, y, layer, out tileID))
+            {
+                SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
+                rend.sprite = Tiles[tileID];
+                rend.sortingOrder = layer - y;
+            }
+            else
+            {
+                SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
+                rend.sprite = null;
+            }            
         }
-        
-
     }
 
     public void Load()
@@ -119,7 +141,7 @@ public class RenderingHandler : MonoBehaviour
         Debug.Log("Grid renderer count: " + sizeX * sizeY * HandledGrid.LayerCount);
     }
 
-    private void UpdateColumn(int sourceX, int destX)
+    private void MoveColumn(int sourceX, int destX)
     {
         for (int y = (int)first.y; y < last.y; ++y)
         {
@@ -153,7 +175,7 @@ public class RenderingHandler : MonoBehaviour
         }
     }
 
-    private void UpdateRow(int sourceY, int destY)
+    private void MoveRow(int sourceY, int destY)
     {
         for (int x = (int)first.x; x < last.x; ++x)
         {

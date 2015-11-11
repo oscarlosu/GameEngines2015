@@ -165,6 +165,7 @@ MonoBehaviour:
   Width: 101
   Depth: 83
   Height: 39
+  RendHandler: {fileID: 476286094}
 --- !u!4 &476286093
 Transform:
   m_ObjectHideFlags: 0

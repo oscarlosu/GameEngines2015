@@ -4,7 +4,7 @@ using System.Linq;
 public class RectangleGrid : MonoBehaviour
 {
     public int Width, Depth, Height;
-
+    public RenderingHandler RendHandler;
     public List<short[,]> grid = new List<short[,]>(5);
     private Dictionary<Vector3, GameObject> gameObjects = new Dictionary<Vector3, GameObject>();
     public int LayerCount
@@ -26,17 +26,22 @@ public class RectangleGrid : MonoBehaviour
         return layer >= 0 && x >= 0 && y >= 0 && layer < grid.Count && x < grid[layer].GetLength(0) && y < grid[layer].GetLength(1);
     }
 
-    private void UpdateLayerPositions(int layerIndex)
+    private void UpdateRendererLayer(int layerIndex)
     {
-        // Unnecessary?
-        throw new System.NotImplementedException();
+        for(int x = 0; x < grid[layerIndex].GetLength(0); ++x)
+        {
+            for (int y = 0; y < grid[layerIndex].GetLength(1); ++y)
+            {
+                RendHandler.UpdateCell(x, y, layerIndex);
+            }
+        }
     }
 
-    private void UpdateRendererCell(int x, int y, int layer)
-    {
-        // Unnecessary?
-        throw new System.NotImplementedException();
-    }
+    //private void UpdateRendererCell(int x, int y, int layer)
+    //{
+    //    // Unnecessary?
+    //    throw new System.NotImplementedException();
+    //}
 
     public bool TryGetTile(int x, int y, int layer, out short tile)
     {
@@ -78,6 +83,7 @@ public class RectangleGrid : MonoBehaviour
         Remove(x, y, layer);
         // Add to the grid
         grid[layer][x, y] = tile;
+        RendHandler.UpdateCell(x, y, layer);
     }
 
     public void Move(int sourceX, int sourceY, int sourceLayer, int destX, int destY, int destLayer)
@@ -112,6 +118,7 @@ public class RectangleGrid : MonoBehaviour
         else if(IsInsideGrid(x, y, layer))
         {
             grid[layer][x, y] = -1;
+            RendHandler.UpdateCell(x, y, layer);
         }
     }
 
@@ -329,6 +336,12 @@ public class RectangleGrid : MonoBehaviour
             short[,] temp = grid[layerIndex1];
             grid[layerIndex1] = grid[layerIndex2];
             grid[layerIndex2] = temp;
+            // Update layers view
+            UpdateRendererLayer(layerIndex1);
+            UpdateRendererLayer(layerIndex2);
+
+
+
             // Swap game objects
             Dictionary<Vector3, GameObject> layer1Dict = new Dictionary<Vector3, GameObject>();
             for (int x = 0; x < grid[layerIndex1].GetLength(0); ++x)

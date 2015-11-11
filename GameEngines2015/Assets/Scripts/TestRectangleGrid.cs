@@ -26,15 +26,18 @@ public class TestRectangleGrid : MonoBehaviour
                 }
             }
         }
-        Handler.Load();
-        MyGrid.AddLayer();
-        MyGrid.FillRect(1, 5, 5, Height - 3, Width - 1, Depth - 1, Height);
+        
+        //MyGrid.AddLayer();
+        //Handler.Load();
+        MyGrid.FillRect(1, 0, 0, Height - 1, Width - 1, Depth - 1, Height-1);
+        MyGrid.SwapLayers(0, Height - 1);
         //MyGrid.RemoveLayer(Height);
         //MyGrid.RemoveLayer(Height-1);
         //MyGrid.RemoveLayer(Height-2);
         //MyGrid.RemoveLayer(Height - 3);
-        MyGrid.MoveRect(5, 5, Height - 3, Width - 1, Depth - 1, Height, 0, 0, 0);
-        Handler.Load();
+        //MyGrid.MoveRect(5, 5, Height - 3, Width - 1, Depth - 1, Height, 0, 0, 0);
+        //MyGrid.Place(1, 5, 5, Height);
+        //Handler.UpdateCell(5, 5, Height);
     }
 
     // Update is called once per frame
