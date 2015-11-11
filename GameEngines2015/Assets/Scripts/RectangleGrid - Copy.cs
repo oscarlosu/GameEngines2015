@@ -209,7 +209,7 @@ public class RectangleGridOLD : MonoBehaviour
             {
                 for (int x = 0; x < grid[layerIndex].GetLength(0); x++)
                 {
-                    GameObject.Destroy(grid[layerIndex][x, y]);
+                    Remove(x, y, layerIndex);
                 }
             }
             // Remove layer from grid

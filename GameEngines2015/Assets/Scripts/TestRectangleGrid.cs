@@ -15,24 +15,26 @@ public class TestRectangleGrid : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        //DEBUGGING
-        MyGrid.grid.Add(new short[500, 500]);
-        MyGrid.grid.Add(new short[500, 500]);
-        MyGrid.grid.Add(new short[500, 500]);
-        MyGrid.grid.Add(new short[500, 500]);
-        MyGrid.grid.Add(new short[500, 500]);
-
+        MyGrid.SetGridSize(Width, Depth, Height);
+        for (int layer = 0; layer < Height; layer++)
+        {
+            for (int y = 0; y < Depth; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    MyGrid.Place(0, x, y, layer);
+                }
+            }
+        }
         Handler.Load();
-        //MyGrid.SetGridSize(Width, Depth, Height);
-        //MyGrid.FillRect(TestObject, 0, 0, 0, Width - 1, Depth - 1, Height - 1);
-        //MyGrid.SetGridSize(1, 2, 1);
-        //Matrix = new short[size];
-        //for(int i = 0; i < size; ++i)
-        //{
-        //    Matrix[i] = new GameObject();
-        //}
-
-
+        MyGrid.AddLayer();
+        MyGrid.FillRect(1, 5, 5, Height - 3, Width - 1, Depth - 1, Height);
+        //MyGrid.RemoveLayer(Height);
+        //MyGrid.RemoveLayer(Height-1);
+        //MyGrid.RemoveLayer(Height-2);
+        //MyGrid.RemoveLayer(Height - 3);
+        MyGrid.MoveRect(5, 5, Height - 3, Width - 1, Depth - 1, Height, 0, 0, 0);
+        Handler.Load();
     }
 
     // Update is called once per frame

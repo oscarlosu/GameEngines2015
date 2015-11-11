@@ -115,6 +115,8 @@ public class RenderingHandler : MonoBehaviour
             }
         }
         Destroy(model);
+
+        Debug.Log("Grid renderer count: " + sizeX * sizeY * HandledGrid.LayerCount);
     }
 
     private void UpdateColumn(int sourceX, int destX)

@@ -115,8 +115,8 @@ MonoBehaviour:
   MyGrid: {fileID: 476286092}
   Handler: {fileID: 476286094}
   TestObject: {fileID: 130806, guid: dbeff3864392edb439c61ba7909e7bc0, type: 2}
-  Width: 50
-  Depth: 50
+  Width: 11
+  Depth: 9
   Height: 10
   X: 0
   Y: 0
@@ -192,6 +192,7 @@ MonoBehaviour:
   BufferY: 0
   Tiles:
   - {fileID: 21300000, guid: d356445d5037950499de513980a1abcd, type: 3}
+  - {fileID: 21300000, guid: 62ec232e35995f54fb4f63a3728b43bc, type: 3}
   HandledGrid: {fileID: 476286092}
 --- !u!1 &589726515
 GameObject:
