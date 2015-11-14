@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+[ExecuteInEditMode]
 public class RenderingHandler : MonoBehaviour
 {
     public int BufferX, BufferY;
@@ -16,55 +17,59 @@ public class RenderingHandler : MonoBehaviour
     {
         
     }
-
+    
     // Update is called once per frame
     void Update()
     {
-        Vector2 newFirst = FirstCellXY();
-        Vector2 newLast = LastCellXY();
-        Vector2 newDif = newLast - newFirst;
-        if(first != newFirst || last != newLast)
+        if (Application.isPlaying)
         {
-            if (dif == newDif)
+            Vector2 newFirst = FirstCellXY();
+            Vector2 newLast = LastCellXY();
+            Vector2 newDif = newLast - newFirst;
+            if (first != newFirst || last != newLast)
             {
-                // TEST
-                //Load();
-                //return;
-                // Move right
-                for (int x = (int)first.x; x < newFirst.x; ++x)
+                if (dif == newDif)
                 {
-                    MoveColumn(x, x + (int)dif.x);
-                }
-                // Move left
-                for (int x = (int)newFirst.x; x < first.x; ++x)
-                {
-                    MoveColumn(x + (int)dif.x, x);
-                }
-                first.x = newFirst.x;
-                last.x = newLast.x;
+                    // TEST
+                    //Load();
+                    //return;
+                    // Move right
+                    for (int x = (int) first.x; x < newFirst.x; ++x)
+                    {
+                        MoveColumn(x, x + (int) dif.x);
+                    }
+                    // Move left
+                    for (int x = (int) newFirst.x; x < first.x; ++x)
+                    {
+                        MoveColumn(x + (int) dif.x, x);
+                    }
+                    first.x = newFirst.x;
+                    last.x = newLast.x;
 
-                // Move up
-                for (int y = (int)first.y; y < newFirst.y; ++y)
-                {
-                    MoveRow(y, y + (int)dif.y);
+                    // Move up
+                    for (int y = (int) first.y; y < newFirst.y; ++y)
+                    {
+                        MoveRow(y, y + (int) dif.y);
+                    }
+                    // Move down
+                    for (int y = (int) newFirst.y; y < first.y; ++y)
+                    {
+                        MoveRow(y + (int) dif.y, y);
+                    }
+                    // Update first and last
+                    first.y = newFirst.y;
+                    last.y = newLast.y;
+                    //dif = newDif;
                 }
-                // Move down
-                for (int y = (int)newFirst.y; y < first.y; ++y)
+                else
                 {
-                    MoveRow(y + (int)dif.y, y);
+                    Debug.Log("Zoom");
+                    Load();
                 }
-                // Update first and last
-                first.y = newFirst.y;
-                last.y = newLast.y;
-                //dif = newDif;
-            }
-            else
-            {
-                Debug.Log("Zoom");
-                Load();
             }
         }
     }
+
     public void UpdateCell(int x, int y, int layer)
     {
         GameObject obj;
@@ -102,7 +107,7 @@ public class RenderingHandler : MonoBehaviour
         sizeX = (int)Mathf.Abs(dif.x);
         sizeY = (int)Mathf.Abs(dif.y);
         // Create a GameObject with a renderer
-        GameObject model = new GameObject();
+        GameObject model = new GameObject("GridRenderer");
         model.AddComponent<SpriteRenderer>();
         // Create renderer GameObjects
         for (int x = 0; x < sizeX; ++x)
@@ -130,7 +135,7 @@ public class RenderingHandler : MonoBehaviour
                         newObj.GetComponent<SpriteRenderer>().sortingOrder = (int)gridPos.z - (int)gridPos.y;
                     }
                     // Make child of this object
-                    newObj.transform.SetParent(transform);
+                    newObj.transform.SetParent(HandledGrid.gameObject.transform);
                     // Add to dictionary
                     renderers.Add(gridPos, newObj);
                 }
@@ -211,18 +216,45 @@ public class RenderingHandler : MonoBehaviour
 
     private Vector2 FirstCellXY()
     {
-        float camHalfWidth = Camera.main.aspect * Camera.main.orthographicSize;
-        int firstX = Mathf.FloorToInt((Camera.main.transform.position.x - camHalfWidth) / HandledGrid.Width) - BufferX;
-        int firstY = Mathf.FloorToInt((Camera.main.transform.position.y - Camera.main.orthographicSize - HandledGrid.Height * HandledGrid.LayerCount) / HandledGrid.Depth) - BufferY;
-        return new Vector2(firstX, firstY);
+        Camera cam;
+        if (GetCurrentCamera(out cam))
+        {
+            float camHalfWidth = cam.aspect*cam.orthographicSize;
+            int firstX = Mathf.FloorToInt((Camera.main.transform.position.x - camHalfWidth)/HandledGrid.Width) - BufferX;
+            int firstY =
+                Mathf.FloorToInt((Camera.main.transform.position.y - Camera.main.orthographicSize -
+                                  HandledGrid.Height*HandledGrid.LayerCount)/HandledGrid.Depth) - BufferY;
+            return new Vector2(firstX, firstY);
+        }
+        return Vector2.zero;
     }
 
     private Vector2 LastCellXY()
     {
-        float camHalfWidth = Camera.main.aspect * Camera.main.orthographicSize;
-        int lastX = Mathf.CeilToInt((Camera.main.transform.position.x + camHalfWidth) / HandledGrid.Width) + BufferX + 1;
-        int lastY = Mathf.CeilToInt((Camera.main.transform.position.y + Camera.main.orthographicSize) / HandledGrid.Depth) + BufferY + 1;
-        return new Vector2(lastX, lastY);
+        Camera cam;
+        if (GetCurrentCamera(out cam))
+        {
+            float camHalfWidth = cam.aspect*cam.orthographicSize;
+            int lastX = Mathf.CeilToInt((cam.transform.position.x + camHalfWidth)/HandledGrid.Width) + BufferX + 1;
+            int lastY = Mathf.CeilToInt((cam.transform.position.y + cam.orthographicSize)/HandledGrid.Depth) + BufferY +
+                        1;
+            return new Vector2(lastX, lastY);
+        }
+        return Vector2.zero;
+    }
+
+    private bool GetCurrentCamera(out Camera cam)
+    {
+        if (Application.isPlaying)
+        {
+            cam = Camera.main;
+            return true;
+        }
+        else
+        {
+            cam = Camera.current;
+            return cam != null;
+        }
     }
 
 
