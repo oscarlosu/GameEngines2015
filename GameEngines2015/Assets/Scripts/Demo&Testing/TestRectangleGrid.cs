@@ -6,21 +6,18 @@ public class TestRectangleGrid : MonoBehaviour
     public RectangleGrid MyGrid;
     public RenderingHandler Handler;
     public GameObject TestObject;
-    public int Width, Depth, Height;
+    public int NX, NY, NLayer;
     public int X, Y, Layer;
-
-    //public short[] Matrix;
-    public int size;
 
     // Use this for initialization
     void Start()
     {
-        MyGrid.SetGridSize(Width, Depth, Height);
-        for (int layer = 0; layer < Height; layer++)
+        MyGrid.SetGridSize(NX, NY, NLayer);
+        for (int layer = 0; layer < NLayer; layer++)
         {
-            for (int y = 0; y < Depth; y++)
+            for (int y = 0; y < NY; y++)
             {
-                for (int x = 0; x < Width; x++)
+                for (int x = 0; x < NX; x++)
                 {
                     MyGrid.Place(0, x, y, layer);
                 }
@@ -28,8 +25,8 @@ public class TestRectangleGrid : MonoBehaviour
         }
         
         //MyGrid.AddLayer();
-        //Handler.Load();
-        MyGrid.FillRect(1, 0, 0, Height - 1, Width - 1, Depth - 1, Height-1);
+        Handler.Load();
+        MyGrid.FillRect(1, 0, 0, NLayer - 1, NX - 1, NY - 1, NLayer-1);
         //MyGrid.SwapLayers(0, Height - 1);
         //MyGrid.RemoveLayer(Height);
         //MyGrid.RemoveLayer(Height-1);
@@ -49,9 +46,9 @@ public class TestRectangleGrid : MonoBehaviour
         //MyGrid.RemoveRect(0, 0, Height - 1, 4, 4, Height - 5);
 
         // Interesting small patch of grass with tall walls of dirt.
-        MyGrid.RemoveRect(0, 0, Height - 1, 4, 4, Height - 5);
-        MyGrid.FillRect(1, 0, 5, Height - 5, 5, 5, Height - 1);
-        MyGrid.FillRect(1, 5, 5, Height - 5, 5, 0, Height - 1);
+        //MyGrid.RemoveRect(0, 0, Height - 1, 4, 4, Height - 5);
+        //MyGrid.FillRect(1, 0, 5, Height - 5, 5, 5, Height - 1);
+        //MyGrid.FillRect(1, 5, 5, Height - 5, 5, 0, Height - 1);
     }
 
     // Update is called once per frame

@@ -12,72 +12,86 @@ public class RenderingHandler : MonoBehaviour
     private int sizeX, sizeY;
     private Vector2 first, last, dif;
 
+    private float lastCameraSize;
+
     // Use this for initialization
     void Start()
     {
+        Camera cam;
+        if(TryGetCurrentCamera(out cam))
+        {
+            lastCameraSize = cam.orthographicSize;
+        }
         
     }
-    
+
     // Update is called once per frame
     void Update()
     {
-        if (Application.isPlaying)
+        Camera cam;
+        if (TryGetCurrentCamera(out cam))
         {
-            Vector2 newFirst = FirstCellXY();
-            Vector2 newLast = LastCellXY();
-            Vector2 newDif = newLast - newFirst;
-            if (first != newFirst || last != newLast)
+            if (Application.isPlaying)
             {
-                if (dif == newDif)
+                Vector2 newFirst = FirstCellXY(cam);
+                Vector2 newLast = LastCellXY(cam);
+                Vector2 newDif = newLast - newFirst;
+                if (first != newFirst || last != newLast)
                 {
-                    // TEST
-                    //Load();
-                    //return;
-                    // Move right
-                    for (int x = (int) first.x; x < newFirst.x; ++x)
+                    //Debug.Log("Diff: " + dif + " newDiff: " + newDif);
+                    if (Mathf.Abs(lastCameraSize - cam.orthographicSize) < float.Epsilon)
                     {
-                        MoveColumn(x, x + (int) dif.x);
-                    }
-                    // Move left
-                    for (int x = (int) newFirst.x; x < first.x; ++x)
-                    {
-                        MoveColumn(x + (int) dif.x, x);
-                    }
-                    first.x = newFirst.x;
-                    last.x = newLast.x;
+                        // Update camera size
+                        lastCameraSize = cam.orthographicSize;
+                        // Move right
+                        for (int x = (int)first.x; x < newFirst.x; ++x)
+                        {
+							MoveColumn(x, x + (int)dif.x);
+                        }
+                        // Move left
+                        for (int x = (int)newFirst.x; x < first.x; ++x)
+                        {
+							MoveColumn(x + (int)dif.x, x);
+                        }
+                        first.x = newFirst.x;
+                        last.x = newLast.x;
+						dif.x = newDif.x;
 
-                    // Move up
-                    for (int y = (int) first.y; y < newFirst.y; ++y)
-                    {
-                        MoveRow(y, y + (int) dif.y);
+                        // Move up
+                        for (int y = (int)first.y; y < newFirst.y; ++y)
+                        {
+							MoveRow(y, y + (int)dif.y);
+                        }
+                        // Move down
+                        for (int y = (int)newFirst.y; y < first.y; ++y)
+                        {
+							MoveRow(y + (int)dif.y, y);
+                        }
+                        // Update first and last
+                        first.y = newFirst.y;
+                        last.y = newLast.y;
+						dif.y = newDif.y;
+                        //dif = newDif;
                     }
-                    // Move down
-                    for (int y = (int) newFirst.y; y < first.y; ++y)
+                    else
                     {
-                        MoveRow(y + (int) dif.y, y);
+                        Debug.Log("Zoom");
+                        Load(cam);
                     }
-                    // Update first and last
-                    first.y = newFirst.y;
-                    last.y = newLast.y;
-                    //dif = newDif;
-                }
-                else
-                {
-                    Debug.Log("Zoom");
-                    Load();
                 }
             }
         }
+        
     }
 
     public void UpdateCell(int x, int y, int layer)
     {
         GameObject obj;
-        if(renderers.TryGetValue(new Vector3(x, y, layer), out obj))
+        if (renderers.TryGetValue(new Vector3(x, y, layer), out obj))
         {
             // Read new sprite from HandledGrid
             short tileID;
-            if(HandledGrid.TryGetTile(x, y, layer, out tileID))
+            if (HandledGrid.TryGetTile(x, y, layer, out tileID))
             {
                 SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
                 rend.sprite = Tiles[tileID];
@@ -87,21 +101,30 @@ public class RenderingHandler : MonoBehaviour
             {
                 SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
                 rend.sprite = null;
-            }            
+            }
         }
     }
 
     public void Load()
     {
+        Camera cam;
+        if (TryGetCurrentCamera(out cam))
+        {
+            Load(cam);
+        }
+    }
+
+    private void Load(Camera cam)
+    {
         // Clear dictionary       
-        foreach(KeyValuePair<Vector3, GameObject> pair in renderers)
+        foreach (KeyValuePair<Vector3, GameObject> pair in renderers)
         {
             Destroy(pair.Value);
         }
         renderers.Clear();
         // Calculate number of renderers necessary to cover the viewport
-        first = FirstCellXY();
-        last = LastCellXY();
+        first = FirstCellXY(cam);
+        last = LastCellXY(cam);
         dif = last - first;
 
         sizeX = (int)Mathf.Abs(dif.x);
@@ -144,6 +167,7 @@ public class RenderingHandler : MonoBehaviour
         Destroy(model);
 
         Debug.Log("Grid renderer count: " + sizeX * sizeY * HandledGrid.LayerCount);
+        //Debug.Log("Total gameobjects in scene: " + GameObject.FindGameObjectsWithTag("Untagged").Length);
     }
 
     private void MoveColumn(int sourceX, int destX)
@@ -214,36 +238,24 @@ public class RenderingHandler : MonoBehaviour
         }
     }
 
-    private Vector2 FirstCellXY()
+    private Vector2 FirstCellXY(Camera cam)
     {
-        Camera cam;
-        if (GetCurrentCamera(out cam))
-        {
-            float camHalfWidth = cam.aspect*cam.orthographicSize;
-            int firstX = Mathf.FloorToInt((Camera.main.transform.position.x - camHalfWidth)/HandledGrid.Width) - BufferX;
-            int firstY =
-                Mathf.FloorToInt((Camera.main.transform.position.y - Camera.main.orthographicSize -
-                                  HandledGrid.Height*HandledGrid.LayerCount)/HandledGrid.Depth) - BufferY;
-            return new Vector2(firstX, firstY);
-        }
-        return Vector2.zero;
+        float camHalfWidth = cam.aspect * cam.orthographicSize;
+        int firstX = Mathf.FloorToInt((Camera.main.transform.position.x - camHalfWidth) / HandledGrid.Width) - BufferX;
+        int firstY = Mathf.FloorToInt((Camera.main.transform.position.y - Camera.main.orthographicSize -
+                                        HandledGrid.Height * HandledGrid.LayerCount) / HandledGrid.Depth) - BufferY;
+        return new Vector2(firstX, firstY);
     }
 
-    private Vector2 LastCellXY()
+    private Vector2 LastCellXY(Camera cam)
     {
-        Camera cam;
-        if (GetCurrentCamera(out cam))
-        {
-            float camHalfWidth = cam.aspect*cam.orthographicSize;
-            int lastX = Mathf.CeilToInt((cam.transform.position.x + camHalfWidth)/HandledGrid.Width) + BufferX + 1;
-            int lastY = Mathf.CeilToInt((cam.transform.position.y + cam.orthographicSize)/HandledGrid.Depth) + BufferY +
-                        1;
-            return new Vector2(lastX, lastY);
-        }
-        return Vector2.zero;
+        float camHalfWidth = cam.aspect * cam.orthographicSize;
+        int lastX = Mathf.CeilToInt((cam.transform.position.x + camHalfWidth) / HandledGrid.Width) + BufferX + 1;
+        int lastY = Mathf.CeilToInt((cam.transform.position.y + cam.orthographicSize) / HandledGrid.Depth) + BufferY + 1;
+        return new Vector2(lastX, lastY);
     }
 
-    private bool GetCurrentCamera(out Camera cam)
+    private bool TryGetCurrentCamera(out Camera cam)
     {
         if (Application.isPlaying)
         {
