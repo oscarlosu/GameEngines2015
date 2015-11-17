@@ -56,4 +56,9 @@ public class TestPoolHandler : GameObjectPoolHandler
 			Debug.Log("Pool size history: " + poolSizeHistory.ToString());
 		}
 	}
+
+	void OnGUI()
+	{
+		string myLog = GUI.TextArea(new Rect(10, 10, 230, 50), "G to request object from the pool \nD to disable random object from pool \nI to display status of the pool");
+	}
 }

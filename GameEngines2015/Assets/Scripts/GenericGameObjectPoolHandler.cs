@@ -5,18 +5,52 @@ using System.Linq;
 
 public abstract class GenericGameObjectPoolHandler<KeyType> : MonoBehaviour
 {
+	/// <summary>
+	/// The pool object prefab. This is the object that will be used in the pool.
+	/// </summary>
 	public GameObject PoolObjectPrefab;
+	/// <summary>
+	/// The default size of the pool. Specifically, it is the starting size of the inactive pool.
+	/// </summary>
 	public int DefaultSize;
+	/// <summary>
+	/// The interval of time in seconds between executions of the size prediction method.
+	/// </summary>
 	public int SizePredictionFrequency;
+	/// <summary>
+	/// The interval of time in seconds between executions of the size sampling method.
+	/// </summary>
 	public int SizeSamplingFrequency;
+	/// <summary>
+	/// A factor that determines how many times standard deviation should be added in order to calculate the predicted pool size.
+	/// </summary>
 	public float BufferFactor;
+	/// <summary>
+	/// A strict limit for the total size of the pool. The pool size will never go beyond this limit.
+	/// </summary>
 	public int HardSizeLimit;
-	
+
+	/// <summary>
+	/// The inactive pool. These are the objects that are currently not in use and are disabled by the pool handler.
+	/// </summary>
 	protected Queue<GameObject> inactivePool;
+	/// <summary>
+	/// The active pool. These are the objects currently in use and enabled. These objects can be retrieved throught their key.
+	/// </summary>
 	protected Dictionary<KeyType, GameObject> activePool;
+	/// <summary>
+	/// The current total size of the pool.
+	/// </summary>
 	protected int poolSize;
+	/// <summary>
+	/// A log of the size of the active pool over a period of time. The <see cref="SamplePoolSize"/> method stores values here and the <see cref="PredictPoolSize"/>
+	/// method uses this information to adjust the size of the pool dinamically.
+	/// </summary>
 	protected List<int> poolSizeHistory;
-	
+
+	/// <summary>
+	/// Initialize the pool with <paramref name="DefaultSize"/> <paramref name="PoolObjectPrefab"/> in the inactive pool.
+	/// </summary>
 	public void Initialize()
 	{
 		ClearPool();
@@ -36,7 +70,13 @@ public abstract class GenericGameObjectPoolHandler<KeyType> : MonoBehaviour
 		StartCoroutine(SamplePoolSize());
 		StartCoroutine(PredictPoolSize());
 	}
-	
+	/// <summary>
+	/// Depending on the state of the pool, either creates a new instance of <paramref name="PoolObjectPrefab"/> or enables one of the
+	/// instances in the inactive pool or returns an already active instance if the given key was found in the active pool.
+	/// Will return null if the <paramref name="HardSizeLimit"/> is reached.
+	/// </summary>
+	/// <returns>The pool object.</returns>
+	/// <param name="key">Key.</param>
 	public GameObject GetPoolObject(KeyType key)
 	{
 		GameObject obj = null;
@@ -65,7 +105,11 @@ public abstract class GenericGameObjectPoolHandler<KeyType> : MonoBehaviour
 		}
 		return obj;
 	}
-	
+	/// <summary>
+	/// Disables the pool object with the given key.
+	/// </summary>
+	/// <returns><c>true</c>, if pool object was disabled, <c>false</c> otherwise.</returns>
+	/// <param name="key">Key.</param>
 	public bool DisablePoolObject(KeyType key)
 	{
 		GameObject obj = null;
@@ -82,7 +126,10 @@ public abstract class GenericGameObjectPoolHandler<KeyType> : MonoBehaviour
 			return false;
 		}
 	}
-	
+	/// <summary>
+	/// Samples the size of the pool.
+	/// </summary>
+	/// <returns>The pool size.</returns>
 	protected IEnumerator SamplePoolSize()
 	{
 		yield return new WaitForSeconds(SizeSamplingFrequency);
@@ -92,7 +139,11 @@ public abstract class GenericGameObjectPoolHandler<KeyType> : MonoBehaviour
 			yield return new WaitForSeconds(SizeSamplingFrequency);
 		}
 	}
-	
+	/// <summary>
+	/// Predicts the size of the pool using the information retrieved by the <see cref="SamplePoolSize"/> method and adjusts
+	/// the size of the inactive pool accordingly.
+	/// </summary>
+	/// <returns>The pool size.</returns>
 	protected IEnumerator PredictPoolSize()
 	{
 		yield return new WaitForSeconds(SizePredictionFrequency);
@@ -121,7 +172,9 @@ public abstract class GenericGameObjectPoolHandler<KeyType> : MonoBehaviour
 			yield return new WaitForSeconds(SizePredictionFrequency);
 		}
 	}
-	
+	/// <summary>
+	/// Clears all the collections in the pool and destroys all the game objects in them.
+	/// </summary>
 	protected void ClearPool()
 	{
 		if(inactivePool != null && activePool != null && poolSizeHistory != null)
