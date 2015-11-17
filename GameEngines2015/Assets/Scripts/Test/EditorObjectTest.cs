@@ -5,6 +5,7 @@ public class EditorObjectTest : MonoBehaviour
 {
 
     public int[] IntArray;
+    public int chosenIndex;
 
 	// Use this for initialization
 	void Start () {
