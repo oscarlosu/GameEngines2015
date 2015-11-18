@@ -25,8 +25,10 @@ public class TestRectangleGrid : MonoBehaviour
         }
         
         //MyGrid.AddLayer();
-        Handler.Load();
-        MyGrid.FillRect(1, 0, 0, NLayer - 1, NX - 1, NY - 1, NLayer-1);
+        //Handler.ZoomLoad();
+		/*MyGrid.Remove(0, 0, 0);
+		Handler.Load();*/
+        //MyGrid.FillRect(1, 0, 0, NLayer - 1, NX - 1, NY - 1, NLayer-1);
         //MyGrid.SwapLayers(0, Height - 1);
         //MyGrid.RemoveLayer(Height);
         //MyGrid.RemoveLayer(Height-1);

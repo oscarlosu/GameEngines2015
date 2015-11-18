@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 public class RectangleGrid : MonoBehaviour
 {
-    public int Width, Depth, Height;
+    public int CellWidth, CellDepth, CellHeight;
     public RenderingHandler RendHandler;
-    public List<short[,]> grid = new List<short[,]>(5);
+    public List<short[,]> grid = new List<short[,]>();
     private Dictionary<Vector3, GameObject> gameObjects = new Dictionary<Vector3, GameObject>();
     public int LayerCount
     {
@@ -14,6 +14,8 @@ public class RectangleGrid : MonoBehaviour
             return grid.Count;
         }
     }
+	public int SizeX { get; private set; }
+	public int SizeY { get; private set; }
 
 
     private bool IsInitialized()
@@ -69,7 +71,7 @@ public class RectangleGrid : MonoBehaviour
         // Add to go dictionary
         gameObjects.Add(new Vector3(x, y, layer), obj);
         // Set world position and z-depth
-        obj.transform.position = new Vector3(x * Width, y * Depth + layer * Height, 0);
+        obj.transform.position = new Vector3(x * CellWidth, y * CellDepth + layer * CellHeight, 0);
         SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
         if (rend != null)
         {
@@ -84,6 +86,7 @@ public class RectangleGrid : MonoBehaviour
         // Add to the grid
         grid[layer][x, y] = tile;
         RendHandler.UpdateCell(x, y, layer);
+		//RendHandler.LoadCell(x, y, layer);
     }
 
     public void Move(int sourceX, int sourceY, int sourceLayer, int destX, int destY, int destLayer)
@@ -119,6 +122,7 @@ public class RectangleGrid : MonoBehaviour
         {
             grid[layer][x, y] = -1;
             RendHandler.UpdateCell(x, y, layer);
+			//RendHandler.UnloadCell(x, y, layer);
         }
     }
 
@@ -151,6 +155,8 @@ public class RectangleGrid : MonoBehaviour
 
     public void SetGridSize(int width, int depth, int height)
     {
+		SizeX = width;
+		SizeY = depth;
         for (int layer = 0; layer < height; layer++)
         {
             // If the layer already exists we want to resize it
@@ -357,7 +363,7 @@ public class RectangleGrid : MonoBehaviour
                         // Remove reference from game objects dictionary
                         gameObjects.Remove(pos);
                         // Update transform and z depth
-                        obj.transform.position = new Vector3(x * Width, y * Depth + layerIndex2 * Height, 0);
+                        obj.transform.position = new Vector3(x * CellWidth, y * CellDepth + layerIndex2 * CellHeight, 0);
                         SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
                         if (rend != null)
                         {
@@ -380,7 +386,7 @@ public class RectangleGrid : MonoBehaviour
                         // Remove reference from game objects dictionary
                         gameObjects.Remove(pos);
                         // Update transform
-                        obj.transform.position = new Vector3(x * Width, y * Depth + layerIndex1 * Height, 0);
+                        obj.transform.position = new Vector3(x * CellWidth, y * CellDepth + layerIndex1 * CellHeight, 0);
                         SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
                         if (rend != null)
                         {

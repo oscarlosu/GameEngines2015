@@ -48,6 +48,10 @@ public abstract class GenericGameObjectPoolHandler<KeyType> : MonoBehaviour
 	/// </summary>
 	protected List<int> poolSizeHistory;
 
+	void Awake()
+	{
+		Initialize ();
+	}
 	/// <summary>
 	/// Initialize the pool with <paramref name="DefaultSize"/> <paramref name="PoolObjectPrefab"/> in the inactive pool.
 	/// </summary>

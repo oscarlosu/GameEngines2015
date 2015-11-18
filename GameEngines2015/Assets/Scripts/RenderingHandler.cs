@@ -1,28 +1,36 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-[ExecuteInEditMode]
 public class RenderingHandler : MonoBehaviour
 {
-    public int BufferX, BufferY;
+	/// <summary>
+	/// The handled grid.
+	/// </summary>
+	public RectangleGrid HandledGrid;
+	public GameObjectPoolHandler RendererPool;
     public List<Sprite> Tiles = new List<Sprite>();
-    public RectangleGrid HandledGrid;
-    private Dictionary<Vector3, GameObject> renderers = new Dictionary<Vector3, GameObject>();
+	public List<int> NonViewObstructingTiles = new List<int>();
 
-    private int sizeX, sizeY;
-    private Vector2 first, last, dif;
+	public bool RenderHidden;
+	public int BufferX, BufferY;
+
+
+	private Dictionary<int, Vector2> firstCell = new Dictionary<int, Vector2>();
+    private int sizeX, sizeY;    
 
     private float lastCameraSize;
+	private float lastCameraX, lastCameraY;
 
     // Use this for initialization
     void Start()
     {
-        Camera cam;
-        if(TryGetCurrentCamera(out cam))
-        {
-            lastCameraSize = cam.orthographicSize;
-        }
-        
+		Camera cam;
+		if (TryGetCurrentCamera(out cam))
+		{
+			lastCameraSize = 0;
+			lastCameraX = cam.transform.position.x;
+			lastCameraY = cam.transform.position.y;
+		}
     }
 
     // Update is called once per frame
@@ -30,230 +38,251 @@ public class RenderingHandler : MonoBehaviour
     {
         Camera cam;
         if (TryGetCurrentCamera(out cam))
-        {
-            if (Application.isPlaying)
-            {
-                Vector2 newFirst = FirstCellXY(cam);
-                Vector2 newLast = LastCellXY(cam);
-                Vector2 newDif = newLast - newFirst;
-                if (first != newFirst || last != newLast)
-                {
-                    //Debug.Log("Diff: " + dif + " newDiff: " + newDif);
-                    if (Mathf.Abs(lastCameraSize - cam.orthographicSize) < float.Epsilon)
-                    {
-                        // Update camera size
-                        lastCameraSize = cam.orthographicSize;
-                        // Move right
-                        for (int x = (int)first.x; x < newFirst.x; ++x)
-                        {
-							MoveColumn(x, x + (int)dif.x);
-                        }
-                        // Move left
-                        for (int x = (int)newFirst.x; x < first.x; ++x)
-                        {
-							MoveColumn(x + (int)dif.x, x);
-                        }
-                        first.x = newFirst.x;
-                        last.x = newLast.x;
-						dif.x = newDif.x;
-
-                        // Move up
-                        for (int y = (int)first.y; y < newFirst.y; ++y)
-                        {
-							MoveRow(y, y + (int)dif.y);
-                        }
-                        // Move down
-                        for (int y = (int)newFirst.y; y < first.y; ++y)
-                        {
-							MoveRow(y + (int)dif.y, y);
-                        }
-                        // Update first and last
-                        first.y = newFirst.y;
-                        last.y = newLast.y;
-						dif.y = newDif.y;
-                        //dif = newDif;
-                    }
-                    else
-                    {
-                        Debug.Log("Zoom");
-                        Load(cam);
-                    }
-                }
-            }
-        }
-        
+        {            
+			// Move with camera
+			if(Mathf.Abs (lastCameraX - cam.transform.position.x) > HandledGrid.CellWidth || 
+			   Mathf.Abs (lastCameraY - cam.transform.position.y) > HandledGrid.CellDepth)
+			{
+				MoveUpdate(cam);
+				lastCameraX = cam.transform.position.x;
+				lastCameraY = cam.transform.position.y;
+			}
+			// Zoom out
+			if(lastCameraSize < cam.orthographicSize)
+			{
+				ZoomLoad(cam);
+				lastCameraSize = cam.orthographicSize;
+			}
+			// Zoom in
+			if(lastCameraSize > cam.orthographicSize)
+			{
+				ZoomUnload(cam);
+				lastCameraSize = cam.orthographicSize;
+			}
+        }     
     }
 
-    public void UpdateCell(int x, int y, int layer)
+	private void MoveUpdate(Camera cam)
+	{
+		int countUnload = 0, countLoad = 0;
+		for(int layer = 0; layer < HandledGrid.LayerCount; ++layer)
+		{
+			Vector2 oldFirstCell = UpdateFirstCellXYInLayer(cam, layer);
+
+			// Unload
+			for(int y = (int)oldFirstCell.y; y < oldFirstCell.y + sizeY; ++y)
+			{
+				// We want to skip any updates outside the grid
+				if(y < 0 || y >= HandledGrid.SizeY)
+				{
+					continue;
+				}
+				for(int x = (int)oldFirstCell.x; x < oldFirstCell.x + sizeX; ++x)
+				{
+					// If current cell is inside the new viewport, skip to the other side of the camera
+					if(y >= firstCell[layer].y && y < firstCell[layer].y + sizeY && 
+					   x >= firstCell[layer].x && x < firstCell[layer].x + sizeX)
+					{
+						x += sizeX - (int)Mathf.Abs(firstCell[layer].x - oldFirstCell.x);
+					}
+					if(x < oldFirstCell.x + sizeX)
+					{
+						UnloadCell(x, y, layer);
+					}
+					++countUnload;
+				}
+			}
+			// Load
+			for(int y = (int)firstCell[layer].y; y < firstCell[layer].y + sizeY; ++y)
+			{
+				// We want to skip any updates outside the grid
+				if(y < 0 || y >= HandledGrid.SizeY)
+				{
+					continue;
+				}
+				for(int x = (int)firstCell[layer].x; x < firstCell[layer].x + sizeX; ++x)
+				{
+					// If current cell is inside the old viewport, skip to the other side of the old camera
+					if(y >= (int)oldFirstCell.y && y < (int)oldFirstCell.y + sizeY && 
+					   x >= (int)oldFirstCell.x && x < (int)oldFirstCell.x + sizeX)
+					{
+						x += sizeX - (int)Mathf.Abs(firstCell[layer].x - oldFirstCell.x);
+					}
+					if(x < firstCell[layer].x + sizeX)
+					{
+						LoadCell(x, y, layer);
+					}
+					++countLoad;
+				}
+			}
+		}
+		Debug.Log ("MoveUnload iterations count: " + countUnload);
+		Debug.Log ("MoveLoad iterations count: " + countLoad);
+	}
+
+	public void ZoomLoad()
+	{
+		Camera cam;
+		if (TryGetCurrentCamera(out cam))
+		{
+			ZoomLoad(cam);
+		}
+	}
+
+    private void ZoomLoad(Camera cam)
     {
-        GameObject obj;
-        if (renderers.TryGetValue(new Vector3(x, y, layer), out obj))
-        {
-            // Read new sprite from HandledGrid
-            short tileID;
-            if (HandledGrid.TryGetTile(x, y, layer, out tileID))
-            {
-                SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
-                rend.sprite = Tiles[tileID];
-                rend.sortingOrder = layer - y;
-            }
-            else
-            {
-                SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
-                rend.sprite = null;
-            }
-        }
+		int oldSizeX = sizeX;
+		int oldSizeY = sizeY;
+		UpdateSizeXY (cam);
+		int count = 0;
+		for(int layer = 0; layer < HandledGrid.LayerCount; ++layer)
+		{
+			Vector2 oldFirstCell = UpdateFirstCellXYInLayer (cam, layer);
+			for(int y = (int)firstCell[layer].y; y < firstCell[layer].y + sizeY; ++y)
+			{
+				// We want to skip any updates outside the grid
+				if(y < 0 || y >= HandledGrid.SizeY)
+				{
+					continue;
+				}
+				for(int x = (int)firstCell[layer].x; x < firstCell[layer].x + sizeX; ++x)
+				{
+					// If current cell is inside the old viewport, skip to the other side of the old camera
+					if(y >= (int)oldFirstCell.y && y < (int)oldFirstCell.y + oldSizeY && x == (int)oldFirstCell.x)
+					{
+						x += oldSizeX;
+					}
+					LoadCell(x, y, layer);
+					++count;
+				}
+			}			
+		}
+		Debug.Log ("ZoomLoad iterations count: " + count);
     }
 
-    public void Load()
-    {
-        Camera cam;
-        if (TryGetCurrentCamera(out cam))
-        {
-            Load(cam);
-        }
-    }
+	public void ZoomUnload()
+	{
+		Camera cam;
+		if (TryGetCurrentCamera(out cam))
+		{
+			ZoomUnload(cam);
+		}
+	}
 
-    private void Load(Camera cam)
-    {
-        // Clear dictionary       
-        foreach (KeyValuePair<Vector3, GameObject> pair in renderers)
-        {
-            Destroy(pair.Value);
-        }
-        renderers.Clear();
-        // Calculate number of renderers necessary to cover the viewport
-        first = FirstCellXY(cam);
-        last = LastCellXY(cam);
-        dif = last - first;
+	private void ZoomUnload(Camera cam)
+	{
+		int oldSizeX = sizeX;
+		int oldSizeY = sizeY;
+		UpdateSizeXY (cam);
+		int count = 0;
+		for(int layer = 0; layer < HandledGrid.LayerCount; ++layer)
+		{
+			Vector2 oldFirstCell = UpdateFirstCellXYInLayer(cam, layer);
+			for(int y = (int)oldFirstCell.y; y < oldFirstCell.y + oldSizeY; ++y)
+			{
+				// We want to skip any updates outside the grid
+				if(y < 0 || y >= HandledGrid.SizeY)
+				{
+					continue;
+				}
+				for(int x = (int)oldFirstCell.x; x < oldFirstCell.x + oldSizeX; ++x)
+				{
+					// If current cell is inside the new viewport, skip to the other side of the camera
+					if(y >= firstCell[layer].y && y < firstCell[layer].y + sizeY && x == firstCell[layer].x)
+					{
+						x += sizeX;
+					}
+					UnloadCell(x, y, layer);
+					++count;
+				}
+			}		
+		}
+		Debug.Log ("ZoomUnload iterations count: " + count);
+	}
 
-        sizeX = (int)Mathf.Abs(dif.x);
-        sizeY = (int)Mathf.Abs(dif.y);
-        // Create a GameObject with a renderer
-        GameObject model = new GameObject("GridRenderer");
-        model.AddComponent<SpriteRenderer>();
-        // Create renderer GameObjects
-        for (int x = 0; x < sizeX; ++x)
-        {
-            for (int y = 0; y < sizeY; ++y)
-            {
-                for (int layer = 0; layer < HandledGrid.LayerCount; ++layer)
-                {
-                    // Copy model
-                    GameObject newObj = Instantiate(model);
-                    // Set world position
-                    newObj.transform.position = new Vector3((first.x + x) * HandledGrid.Width, (first.y + y) * HandledGrid.Depth + layer * HandledGrid.Height, 0);
+	public void UpdateCell(int x, int y, int layer)
+	{
+		if(!LoadCell(x, y, layer))
+		{
+			UnloadCell (x, y, layer);
+		}
+	}
+	
+	public bool LoadCell(int x, int y, int layer)
+	{
+		// Reveal cell
+		short tile;
+		if(HandledGrid.TryGetTile(x, y, layer, out tile))
+		{
+			if(IsCellVisible(x, y, layer))
+			{
+				GameObject obj = RendererPool.GetPoolObject(new Vector3(x, y, layer));
+				// Move renderer to corrent position
+				obj.transform.position = new Vector3(x * HandledGrid.CellWidth, y * HandledGrid.CellDepth + layer * HandledGrid.CellHeight, 0);
+				// Update the sprite and the z-depth
+				SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
+				if(rend != null)
+				{
+					rend.sprite = Tiles[tile];
+					rend.sortingOrder = layer - y;
+				}
+				// Update adjacent cells that might now be hidden
+				// Cell below
+				if(!IsCellVisible(x, y, layer - 1))
+				{
+					RendererPool.DisablePoolObject(new Vector3(x, y, layer - 1));
+				}
+				// Cell behind
+				if(!IsCellVisible(x, y + 1, layer))
+				{
+					RendererPool.DisablePoolObject(new Vector3(x, y + 1, layer));
+				}
+				return true;
+			}
+		}
+		return false;
+	}
 
+	public void UnloadCell(int x, int y, int layer)
+	{
 
-                    // Calculate grid position
-                    Vector3 gridPos = new Vector3(first.x + x, first.y + y, layer);
-                    // Initialize with sprite indicated by HandledGrid
-                    short tileID;
-                    if (HandledGrid.TryGetTile((int)gridPos.x, (int)gridPos.y, (int)gridPos.z, out tileID))
-                    {
-                        newObj.GetComponent<SpriteRenderer>().sprite = Tiles[tileID];
-                        // DEBUGGING
-                        //newObj.GetComponent<SpriteRenderer>().sprite = Tiles[0];
-                        // Set z-depth
-                        newObj.GetComponent<SpriteRenderer>().sortingOrder = (int)gridPos.z - (int)gridPos.y;
-                    }
-                    // Make child of this object
-                    newObj.transform.SetParent(HandledGrid.gameObject.transform);
-                    // Add to dictionary
-                    renderers.Add(gridPos, newObj);
-                }
-            }
-        }
-        Destroy(model);
+		if(RendererPool.DisablePoolObject(new Vector3(x, y, layer)))
+		{
+			// Update adjacent cells that might now be visible
+			// Cell below
+			LoadCell(x, y, layer - 1);
+			// Cell behind
+			LoadCell(x, y + 1, layer);
+		}
+	}
 
-        Debug.Log("Grid renderer count: " + sizeX * sizeY * HandledGrid.LayerCount);
-        //Debug.Log("Total gameobjects in scene: " + GameObject.FindGameObjectsWithTag("Untagged").Length);
-    }
-
-    private void MoveColumn(int sourceX, int destX)
-    {
-        for (int y = (int)first.y; y < last.y; ++y)
-        {
-            for (int layer = 0; layer < HandledGrid.LayerCount; ++layer)
-            {
-
-                Vector3 key = new Vector3(sourceX, y, layer);
-                GameObject go;
-                if (renderers.TryGetValue(key, out go))
-                {
-                    // Extract GameObject from dictionary
-                    renderers.Remove(key);
-                    // Move Game Object
-                    go.transform.position = new Vector3(destX * HandledGrid.Width, y * HandledGrid.Depth + layer * HandledGrid.Height);
-                    // Change sprite
-                    short tileID;
-                    if (HandledGrid.TryGetTile(destX, y, layer, out tileID))
-                    {
-                        go.GetComponent<SpriteRenderer>().sprite = Tiles[tileID];
-                        go.GetComponent<SpriteRenderer>().sortingOrder = layer - y;
-                    }
-                    else
-                    {
-                        go.GetComponent<SpriteRenderer>().sprite = null;
-                    }
-                    // Insert in dictionary
-                    renderers.Add(new Vector3(destX, y, layer), go);
-
-                }
-            }
-        }
-    }
-
-    private void MoveRow(int sourceY, int destY)
-    {
-        for (int x = (int)first.x; x < last.x; ++x)
-        {
-            for (int layer = 0; layer < HandledGrid.LayerCount; ++layer)
-            {
-
-                Vector3 key = new Vector3(x, sourceY, layer);
-                GameObject go;
-                if (renderers.TryGetValue(key, out go))
-                {
-                    // Extract GameObject from dictionary
-                    renderers.Remove(key);
-                    // Move Game Object
-                    go.transform.position = new Vector3(x * HandledGrid.Width, destY * HandledGrid.Depth + layer * HandledGrid.Height);
-                    // Change sprite
-                    short tileID;
-                    if (HandledGrid.TryGetTile(x, destY, layer, out tileID))
-                    {
-                        go.GetComponent<SpriteRenderer>().sprite = Tiles[tileID];
-                        go.GetComponent<SpriteRenderer>().sortingOrder = layer - destY;
-                    }
-                    else
-                    {
-                        go.GetComponent<SpriteRenderer>().sprite = null;
-                    }
-                    // Insert in dictionary
-                    renderers.Add(new Vector3(x, destY, layer), go);
-
-                }
-            }
-        }
-    }
-
-    private Vector2 FirstCellXY(Camera cam)
+    private Vector2 UpdateFirstCellXYInLayer(Camera cam, int layer)
     {
         float camHalfWidth = cam.aspect * cam.orthographicSize;
-        int firstX = Mathf.FloorToInt((Camera.main.transform.position.x - camHalfWidth) / HandledGrid.Width) - BufferX;
-        int firstY = Mathf.FloorToInt((Camera.main.transform.position.y - Camera.main.orthographicSize -
-                                        HandledGrid.Height * HandledGrid.LayerCount) / HandledGrid.Depth) - BufferY;
-        return new Vector2(firstX, firstY);
+        int firstX = Mathf.FloorToInt((Camera.main.transform.position.x - camHalfWidth) / HandledGrid.CellWidth) - BufferX;
+        int firstY = Mathf.FloorToInt((Camera.main.transform.position.y - Camera.main.orthographicSize - HandledGrid.CellHeight * (layer)) / HandledGrid.CellDepth) - BufferY;
+		// If there is an old value for that layer, return it
+		Vector2 old;
+		if(firstCell.ContainsKey(layer))
+		{
+			old = firstCell[layer];
+			firstCell[layer] = new Vector2(firstX, firstY);
+		}
+		// If there wasn't an old value for the layer, return the new value
+		else
+		{
+			old = new Vector2(firstX, firstY);
+			firstCell[layer] = old;
+		}
+		return old;
     }
 
-    private Vector2 LastCellXY(Camera cam)
-    {
-        float camHalfWidth = cam.aspect * cam.orthographicSize;
-        int lastX = Mathf.CeilToInt((cam.transform.position.x + camHalfWidth) / HandledGrid.Width) + BufferX + 1;
-        int lastY = Mathf.CeilToInt((cam.transform.position.y + cam.orthographicSize) / HandledGrid.Depth) + BufferY + 1;
-        return new Vector2(lastX, lastY);
-    }
+	private void UpdateSizeXY(Camera cam)
+	{
+		float camHalfWidth = cam.aspect * cam.orthographicSize;
+		sizeX = Mathf.CeilToInt(2 * camHalfWidth / HandledGrid.CellWidth) + 2 * BufferX;
+		sizeY = Mathf.CeilToInt(2 * cam.orthographicSize / HandledGrid.CellDepth) + 2 * BufferY;
+	}
 
     private bool TryGetCurrentCamera(out Camera cam)
     {
@@ -264,10 +293,57 @@ public class RenderingHandler : MonoBehaviour
         }
         else
         {
-            cam = Camera.current;
-            return cam != null;
+			throw new System.NotImplementedException("TryGetCurrentCamera is not implemented for !Application.isPlaying.");
         }
     }
+
+	private bool IsCellVisible(int x, int y, int layer)
+	{
+		Camera cam;
+		if(!TryGetCurrentCamera(out cam))
+		{
+			throw new System.NullReferenceException("Camera not found.");
+		}
+		// If the requested layer is not part of the grid, return false
+		if(layer < 0 || layer >= HandledGrid.LayerCount)
+		{
+			return false;
+		}
+		// Is the cell within the viewport
+		UpdateFirstCellXYInLayer (cam, layer);
+		UpdateSizeXY (cam);
+		if(firstCell[layer].x <= x && firstCell[layer].y <= y && firstCell[layer].x + sizeX > x && firstCell[layer].y + sizeY > y)
+		{
+			// Is the cell hidden by other cells
+			short tileFront, tileAbove;
+			// If there are tiles above and in front and they are view-obstructing, the cell is not visible
+			if(HandledGrid.TryGetTile(x, y - 1, layer, out tileFront) && HandledGrid.TryGetTile(x, y, layer + 1, out tileAbove) &&
+			   !NonViewObstructingTiles.Contains(tileFront) && !NonViewObstructingTiles.Contains(tileAbove))
+			{
+				return false;
+			}
+			return true;
+		}
+		// If the cell is outside the viewport, it isn't visible
+		return false;
+	}
+
+	/*private bool IsRowInsideViewport(int y, int layer)
+	{
+		Camera cam;
+		if(!TryGetCurrentCamera(out cam))
+		{
+			throw new System.NullReferenceException("Camera not found.");
+		}
+
+		UpdateFirstCellXYInLayer (cam, layer);
+		UpdateSizeXY (cam);
+		if(firstY <= y && firstY + sizeY > y)
+		{
+			return true;
+		}
+		return false;
+	}*/
 
 
 }
