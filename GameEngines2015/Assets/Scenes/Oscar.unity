@@ -121,6 +121,7 @@ MonoBehaviour:
   X: 0
   Y: 0
   Layer: 0
+  FBmIterations: 5
 --- !u!4 &454472806
 Transform:
   m_ObjectHideFlags: 0
@@ -192,11 +193,11 @@ MonoBehaviour:
   HandledGrid: {fileID: 476286092}
   RendererPool: {fileID: 476286095}
   Tiles:
+  - {fileID: 21300018, guid: be65ed526244d264cbdec818845988a4, type: 3}
   - {fileID: 21300032, guid: be65ed526244d264cbdec818845988a4, type: 3}
-  - {fileID: 21300000, guid: be65ed526244d264cbdec818845988a4, type: 3}
   NonViewObstructingTiles: 
   RenderHidden: 0
-  BufferX: 1
+  BufferX: 2
   BufferY: 1
 --- !u!114 &476286095
 MonoBehaviour:
@@ -296,7 +297,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 589726515}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 910, y: 898, z: -10}
+  m_LocalPosition: {x: 395, y: 66, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
