@@ -13,7 +13,7 @@ public class RenderingHandler : MonoBehaviour
 
 	public bool RenderHidden;
 	public int BufferX, BufferY;
-
+	public float MaxTint;
 
 	private Dictionary<int, Vector2> firstCell = new Dictionary<int, Vector2>();
     private int sizeX, sizeY;    
@@ -207,7 +207,7 @@ public class RenderingHandler : MonoBehaviour
 			UnloadCell (x, y, layer);
 		}
 	}
-	
+
 	public bool LoadCell(int x, int y, int layer)
 	{
 		// Reveal cell
@@ -225,6 +225,9 @@ public class RenderingHandler : MonoBehaviour
 				{
 					rend.sprite = Tiles[tile];
 					rend.sortingOrder = layer - y;
+					// Tint
+					float tintVal = Mathf.Lerp (1 - MaxTint, 1, layer / (float)HandledGrid.LayerCount);
+					rend.color = new Color(tintVal, tintVal, tintVal);
 				}
 				// Update adjacent cells that might now be hidden
 				// Cell below
