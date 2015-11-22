@@ -49,6 +49,7 @@ public class TestRectangleGrid : MonoBehaviour
             }
         }
 
+		Handler.HideFromLayer(5);
 
         /**********************
         * Old test code.
