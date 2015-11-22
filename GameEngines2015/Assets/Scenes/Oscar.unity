@@ -318,10 +318,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
-      propertyPath: TransparencyCurve.m_Curve.Array.size
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 471906, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -359,60 +355,8 @@ Prefab:
       value: 
       objectReference: {fileID: 476286092}
     - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
-      propertyPath: CellCoords.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
-      propertyPath: CellCoords.y
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
-      propertyPath: CellCoords.z
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
-      propertyPath: AgentType
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
-      propertyPath: TransparencyAlpha
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
-      propertyPath: TransparencyCurve.m_Curve.Array.data[1].time
-      value: .877221525
-      objectReference: {fileID: 0}
-    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
-      propertyPath: TransparencyCurve.m_Curve.Array.data[1].value
-      value: .27735436
-      objectReference: {fileID: 0}
-    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
-      propertyPath: TransparencyCurve.m_Curve.Array.data[1].inSlope
-      value: .640437067
-      objectReference: {fileID: 0}
-    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
-      propertyPath: TransparencyCurve.m_Curve.Array.data[1].outSlope
-      value: .680725455
-      objectReference: {fileID: 0}
-    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
-      propertyPath: TransparencyCurve.m_Curve.Array.data[2].time
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
-      propertyPath: TransparencyCurve.m_Curve.Array.data[2].value
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
-      propertyPath: TransparencyCurve.m_Curve.Array.data[2].inSlope
-      value: 10.5111094
-      objectReference: {fileID: 0}
-    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
-      propertyPath: TransparencyCurve.m_Curve.Array.data[2].outSlope
-      value: 10.5111094
-      objectReference: {fileID: 0}
-    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
-      propertyPath: TransparencyCurve.m_Curve.Array.data[1].tangentMode
-      value: 1
+      propertyPath: TransparencyLayerOffset
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
