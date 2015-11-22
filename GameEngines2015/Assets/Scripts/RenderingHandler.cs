@@ -21,8 +21,10 @@ public class RenderingHandler : MonoBehaviour
     private float lastCameraSize;
 	private float lastCameraX, lastCameraY;
 
+	public int lowestHiddenLayer;
+
     // Use this for initialization
-    void Start()
+    void Awake()
     {
 		Camera cam;
 		if (TryGetCurrentCamera(out cam))
@@ -31,6 +33,8 @@ public class RenderingHandler : MonoBehaviour
 			lastCameraX = cam.transform.position.x;
 			lastCameraY = cam.transform.position.y;
 		}
+		// No layer is hidden by default (zero index)
+		lowestHiddenLayer = HandledGrid.LayerCount;
     }
 
     // Update is called once per frame
@@ -79,6 +83,13 @@ public class RenderingHandler : MonoBehaviour
 				}
 				for(int x = (int)oldFirstCell.x; x < oldFirstCell.x + sizeX; ++x)
 				{
+					++countUnload;
+					// Unload all the cells inside hidden layers
+					if(layer >= lowestHiddenLayer)
+					{
+						UnloadCell(x, y, layer);
+						continue;
+					}
 					// If current cell is inside the new viewport, skip to the other side of the camera
 					if(y >= firstCell[layer].y && y < firstCell[layer].y + sizeY && 
 					   x >= firstCell[layer].x && x < firstCell[layer].x + sizeX)
@@ -89,12 +100,16 @@ public class RenderingHandler : MonoBehaviour
 					{
 						UnloadCell(x, y, layer);
 					}
-					++countUnload;
 				}
 			}
 			// Load
 			for(int y = (int)firstCell[layer].y; y < firstCell[layer].y + sizeY; ++y)
 			{
+				// Skip all the layers that are hidden
+				if(layer >= lowestHiddenLayer)
+				{
+					continue;
+				}
 				// We want to skip any updates outside the grid
 				if(y < 0 || y >= HandledGrid.SizeY)
 				{
@@ -120,6 +135,16 @@ public class RenderingHandler : MonoBehaviour
 		Debug.Log ("MoveLoad iterations count: " + countLoad);
 	}
 
+	public void ZoomUpdate()
+	{
+		int oldSizeX = sizeX;
+		int oldSizeY = sizeY;
+		ZoomUnload ();
+		sizeX = oldSizeX;
+		sizeY = oldSizeY;
+		ZoomLoad();
+	}
+
 	public void ZoomLoad()
 	{
 		Camera cam;
@@ -138,6 +163,11 @@ public class RenderingHandler : MonoBehaviour
 		for(int layer = 0; layer < HandledGrid.LayerCount; ++layer)
 		{
 			Vector2 oldFirstCell = UpdateFirstCellXYInLayer (cam, layer);
+			// Skip all the layers that are hidden
+			if(layer >= lowestHiddenLayer)
+			{
+				continue;
+			}
 			for(int y = (int)firstCell[layer].y; y < firstCell[layer].y + sizeY; ++y)
 			{
 				// We want to skip any updates outside the grid
@@ -187,13 +217,19 @@ public class RenderingHandler : MonoBehaviour
 				}
 				for(int x = (int)oldFirstCell.x; x < oldFirstCell.x + oldSizeX; ++x)
 				{
+					++count;
+					// Unload all the cells inside hidden layers
+					if(layer >= lowestHiddenLayer)
+					{
+						UnloadCell(x, y, layer);
+						continue;
+					}
 					// If current cell is inside the new viewport, skip to the other side of the camera
 					if(y >= firstCell[layer].y && y < firstCell[layer].y + sizeY && x == firstCell[layer].x)
 					{
 						x += sizeX;
 					}
 					UnloadCell(x, y, layer);
-					++count;
 				}
 			}		
 		}
@@ -259,6 +295,22 @@ public class RenderingHandler : MonoBehaviour
 		}
 	}
 
+	public void HideFromLayer(int index)
+	{
+		index = Mathf.Clamp(index, 0, HandledGrid.LayerCount);
+		lowestHiddenLayer = index;
+		ZoomUpdate();
+		/*if(lowestHiddenLayer > index)
+		{
+			lowestHiddenLayer = index;
+
+		}
+		else if(lowestHiddenLayer < index)
+		{
+			lowestHiddenLayer = index;
+		}*/
+	}
+
     private Vector2 UpdateFirstCellXYInLayer(Camera cam, int layer)
     {
         float camHalfWidth = cam.aspect * cam.orthographicSize;
@@ -312,6 +364,11 @@ public class RenderingHandler : MonoBehaviour
 		{
 			return false;
 		}
+		// If the cell is within a hidden layer, it is not visible
+		if(layer >= lowestHiddenLayer)
+		{
+			return false;
+		}
 		// Is the cell within the viewport
 		UpdateFirstCellXYInLayer (cam, layer);
 		UpdateSizeXY (cam);
@@ -320,8 +377,10 @@ public class RenderingHandler : MonoBehaviour
 			// Is the cell hidden by other cells
 			short tileFront, tileAbove;
 			// If there are tiles above and in front and they are view-obstructing, the cell is not visible
+			// and they are not in a hidden layer
 			if(HandledGrid.TryGetTile(x, y - 1, layer, out tileFront) && HandledGrid.TryGetTile(x, y, layer + 1, out tileAbove) &&
-			   !NonViewObstructingTiles.Contains(tileFront) && !NonViewObstructingTiles.Contains(tileAbove))
+			   !NonViewObstructingTiles.Contains(tileFront) && !NonViewObstructingTiles.Contains(tileAbove) &&
+			   layer + 1 < lowestHiddenLayer)
 			{
 				return false;
 			}
