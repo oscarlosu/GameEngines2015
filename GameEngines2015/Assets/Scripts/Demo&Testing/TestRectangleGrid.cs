@@ -17,6 +17,26 @@ public class TestRectangleGrid : MonoBehaviour
     {
         MyGrid.SetGridSize(NX, NY, NLayer);
         
+
+		// Transparency testing
+		// Floor
+		for (int y = 0; y < NY; y++)
+		{
+			for (int x = 0; x < NX; x++)
+			{
+				MyGrid.Place(0, x, y, 0);
+			}
+		}
+		// Wall
+		for (int layer = 1; layer < NLayer; layer++)
+		{
+			for (int x = 0; x < NX; x++)
+			{
+				MyGrid.Place(0, x, 0, layer);
+			}
+		}
+		Handler.HideFromLayer(10);
+		return;
         for (int y = 0; y < NY; y++)
         {
             for (int x = 0; x < NX; x++)
@@ -49,7 +69,7 @@ public class TestRectangleGrid : MonoBehaviour
             }
         }
 
-		Handler.HideFromLayer(5);
+		Handler.HideFromLayer(10);
 
         /**********************
         * Old test code.

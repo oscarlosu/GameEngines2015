@@ -8,6 +8,11 @@ public class GridAgent : MonoBehaviour
 	public Vector3 CellCoords;
 	public List<int> NotWalkableTileIndexes = new List<int>();
 
+	public float TransparencyAlpha;
+	public int TransparencyHalfSizeX;
+	public int TransparencyLayerOffset;
+	public AnimationCurve TransparencyCurve;
+
 	private SpriteRenderer rend;
 
 	public enum HorizontalDirection
@@ -98,6 +103,7 @@ public class GridAgent : MonoBehaviour
 			CellCoords += new Vector3(xInc, yInc, layerInc);
 			transform.position += new Vector3(xInc * Grid.CellWidth, yInc * Grid.CellDepth + layerInc * Grid.CellHeight, 0);
 			rend.sortingOrder = (int)CellCoords.z - (int)CellCoords.y;
+			Grid.RendHandler.UpdateTransparencyAround((int)CellCoords.x, (int)CellCoords.y, (int)CellCoords.z, TransparencyAlpha, TransparencyHalfSizeX, TransparencyLayerOffset, TransparencyCurve);
 		}
 	}
 

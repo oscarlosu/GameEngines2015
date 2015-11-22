@@ -265,9 +265,12 @@ public class RenderingHandler : MonoBehaviour
                 {
                     rend.sprite = Tiles[tile];
                     rend.sortingOrder = layer - y;
-                    // Tint
+                    // Tint and transparency
                     /*float tintVal = Mathf.Lerp (1 - MaxTint, 1, layer / (float)HandledGrid.LayerCount);*/ // Old layer-based lighting system.
-                    rend.color = GetTintColour(x, y, layer);
+                    Color newColor = GetTintColour(x, y, layer);
+					// Leave transparency as it was
+					newColor.a = rend.color.a;
+					rend.color = newColor;
                 }
                 // Update adjacent cells that might now be hidden
                 // Cell below
@@ -285,6 +288,44 @@ public class RenderingHandler : MonoBehaviour
         }
         return false;
     }
+
+
+
+	public void UpdateTransparencyAround(int agentX, int agentY, int agentLayer, float alpha, int halfSize, int layerOffset, AnimationCurve transparencyCurve)
+	{
+		Camera cam;
+		if(!TryGetCurrentCamera(out cam))
+		{
+			return;
+		}
+		float maxDist = Vector2.Distance(new Vector2(agentX * HandledGrid.CellWidth, agentY * HandledGrid.CellDepth + agentLayer * HandledGrid.CellHeight), 
+		                                 new Vector2((agentX + halfSize) * HandledGrid.CellWidth, (agentY - 1) * HandledGrid.CellDepth + Mathf.Min(HandledGrid.LayerCount, layerOffset) * HandledGrid.CellHeight));
+		for(int layer = agentLayer; layer < Mathf.Min(HandledGrid.LayerCount, layerOffset); ++layer)
+		{
+			//UpdateFirstCellXYInLayer(cam, layer);
+			for(int x = Mathf.Max (agentX - halfSize, 0); x <= agentX + halfSize; ++x)
+			{
+				for(int y = (int)Mathf.Max (agentY - halfSize, firstCell[layer].y); y < agentY; ++y)
+				{
+					// Because we want to avoid the overlap with the whole tile, not just the leftmost bottommost corner, we need to add 1 to the layer and the y
+					if(IsCellVisible(x, y, layer) && 
+					   (y + 1) * HandledGrid.CellDepth + (layer + 1) * HandledGrid.CellHeight >= agentY * HandledGrid.CellDepth + agentLayer * HandledGrid.CellHeight)
+					{
+						GameObject obj = RendererPool.GetPoolObject(new Vector3(x, y, layer));
+						SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
+						if(rend != null)
+						{
+							float cellAlpha = transparencyCurve.Evaluate(Vector2.Distance(new Vector2(agentX * HandledGrid.CellWidth, agentY * HandledGrid.CellDepth + agentLayer * HandledGrid.CellHeight), 
+							                                                              new Vector2(x * HandledGrid.CellWidth, y * HandledGrid.CellDepth + layer * HandledGrid.CellHeight))
+							                                             / maxDist);
+							rend.color = new Color(rend.color.r, rend.color.g, rend.color.b, cellAlpha);
+						}
+					}
+				}
+			}
+		}
+	}
+
 
     public void UnloadCell(int x, int y, int layer)
     {
@@ -458,6 +499,19 @@ public class RenderingHandler : MonoBehaviour
 		// If the cell is outside the viewport, it isn't visible
 		return false;
 	}
+
+/*	private bool IsCellTransparent(int x, int y, int layer)
+	{
+		foreach(GridAgent agent in TransparencyAgents)
+		{
+			if(x >= agent.CellCoords.x - TransparencyHalfSizeX && x <= agent.CellCoords.x + TransparencyHalfSizeX &&
+			   layer >= agent.CellCoords.z + TransparencyLayerOffset)
+			{
+				return true;
+			}
+		}
+		return false;
+	}*/
 
     /*private bool IsRowInsideViewport(int y, int layer)
 	{

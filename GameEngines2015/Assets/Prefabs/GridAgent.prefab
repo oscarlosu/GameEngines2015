@@ -41,8 +41,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Grid: {fileID: 0}
-  CellCoords: {x: 0, y: 0, z: 0}
+  CellCoords: {x: 0, y: 0, z: 7}
   NotWalkableTileIndexes: 
+  TransparencyAlpha: .5
+  TransparencyHalfSizeX: 5
+  TransparencyLayerOffset: 0
   AgentType: 0
 --- !u!212 &21246694
 SpriteRenderer:
