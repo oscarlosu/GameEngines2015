@@ -55,7 +55,8 @@ public class TestRectangleGrid : MonoBehaviour
         * Old test code.
         **********************/
 
-        /*MyGrid.SetGridSize(NX, NY, NLayer);
+        /*
+        MyGrid.SetGridSize(NX, NY, NLayer);
         for (int layer = 0; layer < NLayer; layer++)
         {
             for (int y = 0; y < NY; y++)
@@ -91,8 +92,8 @@ public class TestRectangleGrid : MonoBehaviour
         // Interesting small patch of grass with tall walls of dirt.
         MyGrid.RemoveRect(0, 0, NLayer - 1, 4, 4, NLayer - 5);
         MyGrid.FillRect(1, 0, 5, NLayer - 5, 5, 5, NLayer - 1);
-        MyGrid.FillRect(1, 5, 5, NLayer - 5, 5, 0, NLayer - 1);*/
-
+        MyGrid.FillRect(1, 5, 5, NLayer - 5, 5, 0, NLayer - 1);
+        */
     }
 
 	float fBm(int iterations, float x, float y)
