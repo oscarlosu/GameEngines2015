@@ -3,23 +3,27 @@ using System.Collections.Generic;
 
 public class RenderingHandler : MonoBehaviour
 {
-	/// <summary>
-	/// The handled grid.
-	/// </summary>
-	public RectangleGrid HandledGrid;
-	public GameObjectPoolHandler RendererPool;
+    /// <summary>
+    /// The handled grid.
+    /// </summary>
+    public RectangleGrid HandledGrid;
+    public GameObjectPoolHandler RendererPool;
     public List<Sprite> Tiles = new List<Sprite>();
-	public List<int> NonViewObstructingTiles = new List<int>();
+    public List<int> NonViewObstructingTiles = new List<int>();
 
-	public bool RenderHidden;
-	public int BufferX, BufferY;
-	public float MaxTint;
+    public bool RenderHidden;
+    public int BufferX, BufferY;
+    public LightingMode CurrentLightingMode;
+    public TimeOfDay SelectedTimeOfDay;
+    public Vector3 MiddayColourMultipliers, MorningColourMultipliers, NightColourMultipliers;
+    public float MaxTint;
+    public float TintIncrease;
 
-	private Dictionary<int, Vector2> firstCell = new Dictionary<int, Vector2>();
-    private int sizeX, sizeY;    
+    private Dictionary<int, Vector2> firstCell = new Dictionary<int, Vector2>();
+    private int sizeX, sizeY;
 
     private float lastCameraSize;
-	private float lastCameraX, lastCameraY;
+    private float lastCameraX, lastCameraY;
 
 	public int lowestHiddenLayer;
 
@@ -42,36 +46,36 @@ public class RenderingHandler : MonoBehaviour
     {
         Camera cam;
         if (TryGetCurrentCamera(out cam))
-        {            
-			// Move with camera
-			if(Mathf.Abs (lastCameraX - cam.transform.position.x) > HandledGrid.CellWidth || 
-			   Mathf.Abs (lastCameraY - cam.transform.position.y) > HandledGrid.CellDepth)
-			{
-				MoveUpdate(cam);
-				lastCameraX = cam.transform.position.x;
-				lastCameraY = cam.transform.position.y;
-			}
-			// Zoom out
-			if(lastCameraSize < cam.orthographicSize)
-			{
-				ZoomLoad(cam);
-				lastCameraSize = cam.orthographicSize;
-			}
-			// Zoom in
-			if(lastCameraSize > cam.orthographicSize)
-			{
-				ZoomUnload(cam);
-				lastCameraSize = cam.orthographicSize;
-			}
-        }     
+        {
+            // Move with camera
+            if (Mathf.Abs(lastCameraX - cam.transform.position.x) > HandledGrid.CellWidth ||
+               Mathf.Abs(lastCameraY - cam.transform.position.y) > HandledGrid.CellDepth)
+            {
+                MoveUpdate(cam);
+                lastCameraX = cam.transform.position.x;
+                lastCameraY = cam.transform.position.y;
+            }
+            // Zoom out
+            if (lastCameraSize < cam.orthographicSize)
+            {
+                ZoomLoad(cam);
+                lastCameraSize = cam.orthographicSize;
+            }
+            // Zoom in
+            if (lastCameraSize > cam.orthographicSize)
+            {
+                ZoomUnload(cam);
+                lastCameraSize = cam.orthographicSize;
+            }
+        }
     }
 
-	private void MoveUpdate(Camera cam)
-	{
-		int countUnload = 0, countLoad = 0;
-		for(int layer = 0; layer < HandledGrid.LayerCount; ++layer)
-		{
-			Vector2 oldFirstCell = UpdateFirstCellXYInLayer(cam, layer);
+    private void MoveUpdate(Camera cam)
+    {
+        int countUnload = 0, countLoad = 0;
+        for (int layer = 0; layer < HandledGrid.LayerCount; ++layer)
+        {
+            Vector2 oldFirstCell = UpdateFirstCellXYInLayer(cam, layer);
 
 			// Unload
 			for(int y = (int)oldFirstCell.y; y < oldFirstCell.y + sizeY; ++y)
@@ -190,14 +194,14 @@ public class RenderingHandler : MonoBehaviour
 		Debug.Log ("ZoomLoad iterations count: " + count);
     }
 
-	public void ZoomUnload()
-	{
-		Camera cam;
-		if (TryGetCurrentCamera(out cam))
-		{
-			ZoomUnload(cam);
-		}
-	}
+    public void ZoomUnload()
+    {
+        Camera cam;
+        if (TryGetCurrentCamera(out cam))
+        {
+            ZoomUnload(cam);
+        }
+    }
 
 	private void ZoomUnload(Camera cam)
 	{
@@ -236,87 +240,115 @@ public class RenderingHandler : MonoBehaviour
 		Debug.Log ("ZoomUnload iterations count: " + count);
 	}
 
-	public void UpdateCell(int x, int y, int layer)
-	{
-		if(!LoadCell(x, y, layer))
-		{
-			UnloadCell (x, y, layer);
-		}
-	}
+    public void UpdateCell(int x, int y, int layer)
+    {
+        if (!LoadCell(x, y, layer))
+        {
+            UnloadCell(x, y, layer);
+        }
+    }
 
-	public bool LoadCell(int x, int y, int layer)
-	{
-		// Reveal cell
-		short tile;
-		if(HandledGrid.TryGetTile(x, y, layer, out tile))
-		{
-			if(IsCellVisible(x, y, layer))
-			{
-				GameObject obj = RendererPool.GetPoolObject(new Vector3(x, y, layer));
-				// Move renderer to corrent position
-				obj.transform.position = new Vector3(x * HandledGrid.CellWidth, y * HandledGrid.CellDepth + layer * HandledGrid.CellHeight, 0);
-				// Update the sprite and the z-depth
-				SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
-				if(rend != null)
-				{
-					rend.sprite = Tiles[tile];
-					rend.sortingOrder = layer - y;
-					// Tint
-				    float tintVal = 1;
-				    float tintIncr = .1f;
-				    if (layer < HandledGrid.LayerCount - 1)
-				    {
-				        if (!HandledGrid.IsCellFree(x + 1, y, layer + 1))
-				        {
-				            tintVal -= tintIncr;
-                        }
-				        if (!HandledGrid.IsCellFree(x - 1, y, layer + 1))
-				        {
-				            tintVal -= tintIncr;
-                        }
-				        if (!HandledGrid.IsCellFree(x, y + 1, layer + 1))
-				        {
-				            tintVal -= tintIncr;
-                        }
-				        if (!HandledGrid.IsCellFree(x, y - 1, layer + 1))
-				        {
-				            tintVal -= tintIncr;
-                        }
-				    }
-                    // Make sure nothing becomes black.
-				    if (tintVal < MaxTint) tintVal = MaxTint;
-				    /*float tintVal = Mathf.Lerp (1 - MaxTint, 1, layer / (float)HandledGrid.LayerCount);*/ // Old layer-based lighting system.
-                    rend.color = new Color(tintVal, tintVal, tintVal);
-				}
-				// Update adjacent cells that might now be hidden
-				// Cell below
-				if(!IsCellVisible(x, y, layer - 1))
-				{
-					RendererPool.DisablePoolObject(new Vector3(x, y, layer - 1));
-				}
-				// Cell behind
-				if(!IsCellVisible(x, y + 1, layer))
-				{
-					RendererPool.DisablePoolObject(new Vector3(x, y + 1, layer));
-				}
-				return true;
-			}
-		}
-		return false;
-	}
+    public bool LoadCell(int x, int y, int layer)
+    {
+        // Reveal cell
+        short tile;
+        if (HandledGrid.TryGetTile(x, y, layer, out tile))
+        {
+            if (IsCellVisible(x, y, layer))
+            {
+                GameObject obj = RendererPool.GetPoolObject(new Vector3(x, y, layer));
+                // Move renderer to corrent position
+                obj.transform.position = new Vector3(x * HandledGrid.CellWidth, y * HandledGrid.CellDepth + layer * HandledGrid.CellHeight, 0);
+                // Update the sprite and the z-depth
+                SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
+                if (rend != null)
+                {
+                    rend.sprite = Tiles[tile];
+                    rend.sortingOrder = layer - y;
+                    // Tint
+                    /*float tintVal = Mathf.Lerp (1 - MaxTint, 1, layer / (float)HandledGrid.LayerCount);*/ // Old layer-based lighting system.
+                    rend.color = GetTintColour(x, y, layer);
+                }
+                // Update adjacent cells that might now be hidden
+                // Cell below
+                if (!IsCellVisible(x, y, layer - 1))
+                {
+                    RendererPool.DisablePoolObject(new Vector3(x, y, layer - 1));
+                }
+                // Cell behind
+                if (!IsCellVisible(x, y + 1, layer))
+                {
+                    RendererPool.DisablePoolObject(new Vector3(x, y + 1, layer));
+                }
+                return true;
+            }
+        }
+        return false;
+    }
 
-	public void UnloadCell(int x, int y, int layer)
-	{
+    public void UnloadCell(int x, int y, int layer)
+    {
 
-		if(RendererPool.DisablePoolObject(new Vector3(x, y, layer)))
-		{
-			// Update adjacent cells that might now be visible
-			// Cell below
-			LoadCell(x, y, layer - 1);
-			// Cell behind
-			LoadCell(x, y + 1, layer);
-		}
-	}
+        if (RendererPool.DisablePoolObject(new Vector3(x, y, layer)))
+        {
+            // Update adjacent cells that might now be visible
+            // Cell below
+            LoadCell(x, y, layer - 1);
+            // Cell behind
+            LoadCell(x, y + 1, layer);
+        }
+    }
+
+    private Color GetTintColour(int x, int y, int layer)
+    {
+        // Lighting is coming from up-left.
+        float tintVal = 1;
+        switch (CurrentLightingMode)
+        {
+            case LightingMode.LayerBased:
+                tintVal = Mathf.Lerp(1 - MaxTint, 1, layer / (float)HandledGrid.LayerCount);
+                break;
+            case LightingMode.AdjecentWithSun:
+                tintVal = 1;
+                if (layer < HandledGrid.LayerCount - 1)
+                {
+                    if (!HandledGrid.IsCellFree(x - 1, y, layer + 1))
+                    {
+                        tintVal -= TintIncrease;
+                    }
+                    if (!HandledGrid.IsCellFree(x - 1, y + 1, layer + 1))
+                    {
+                        tintVal -= TintIncrease;
+                    }
+                    if (!HandledGrid.IsCellFree(x, y + 1, layer + 1))
+                    {
+                        tintVal -= TintIncrease;
+                    }
+                }
+                break;
+        }
+        // Make sure nothing becomes black.
+        if (tintVal < MaxTint) tintVal = MaxTint;
+        float tintValR, tintValG, tintValB;
+
+        // If midday, just add the tint value as is to all colours.
+        tintValR = tintVal * MiddayColourMultipliers.x;
+        tintValG = tintVal * MiddayColourMultipliers.y;
+        tintValB = tintVal * MiddayColourMultipliers.z;
+        if (SelectedTimeOfDay == TimeOfDay.Morning)
+        {
+            tintValR = tintVal * MorningColourMultipliers.x;
+            tintValG = tintVal * MorningColourMultipliers.y;
+            tintValB = tintVal * MorningColourMultipliers.z;
+        }
+        if (SelectedTimeOfDay == TimeOfDay.Night)
+        {
+            tintValR = tintVal * NightColourMultipliers.x;
+            tintValG = tintVal * NightColourMultipliers.y;
+            tintValB = tintVal * NightColourMultipliers.z;
+        }
+        return new Color(tintValR, tintValG, tintValB);
+    }
 
 	public void HideFromLayer(int index)
 	{
@@ -352,28 +384,28 @@ public class RenderingHandler : MonoBehaviour
         float camHalfWidth = cam.aspect * cam.orthographicSize;
         int firstX = Mathf.FloorToInt((Camera.main.transform.position.x - camHalfWidth) / HandledGrid.CellWidth) - BufferX;
         int firstY = Mathf.FloorToInt((Camera.main.transform.position.y - Camera.main.orthographicSize - HandledGrid.CellHeight * (layer)) / HandledGrid.CellDepth) - BufferY;
-		// If there is an old value for that layer, return it
-		Vector2 old;
-		if(firstCell.ContainsKey(layer))
-		{
-			old = firstCell[layer];
-			firstCell[layer] = new Vector2(firstX, firstY);
-		}
-		// If there wasn't an old value for the layer, return the new value
-		else
-		{
-			old = new Vector2(firstX, firstY);
-			firstCell[layer] = old;
-		}
-		return old;
+        // If there is an old value for that layer, return it
+        Vector2 old;
+        if (firstCell.ContainsKey(layer))
+        {
+            old = firstCell[layer];
+            firstCell[layer] = new Vector2(firstX, firstY);
+        }
+        // If there wasn't an old value for the layer, return the new value
+        else
+        {
+            old = new Vector2(firstX, firstY);
+            firstCell[layer] = old;
+        }
+        return old;
     }
 
-	private void UpdateSizeXY(Camera cam)
-	{
-		float camHalfWidth = cam.aspect * cam.orthographicSize;
-		sizeX = Mathf.CeilToInt(2 * camHalfWidth / HandledGrid.CellWidth) + 2 * BufferX;
-		sizeY = Mathf.CeilToInt(2 * cam.orthographicSize / HandledGrid.CellDepth) + 2 * BufferY;
-	}
+    private void UpdateSizeXY(Camera cam)
+    {
+        float camHalfWidth = cam.aspect * cam.orthographicSize;
+        sizeX = Mathf.CeilToInt(2 * camHalfWidth / HandledGrid.CellWidth) + 2 * BufferX;
+        sizeY = Mathf.CeilToInt(2 * cam.orthographicSize / HandledGrid.CellDepth) + 2 * BufferY;
+    }
 
     private bool TryGetCurrentCamera(out Camera cam)
     {
@@ -384,9 +416,10 @@ public class RenderingHandler : MonoBehaviour
         }
         else
         {
-			throw new System.NotImplementedException("TryGetCurrentCamera is not implemented for !Application.isPlaying.");
+            throw new System.NotImplementedException("TryGetCurrentCamera is not implemented for !Application.isPlaying.");
         }
     }
+
 
 	private bool IsCellVisible(int x, int y, int layer)
 	{
@@ -426,7 +459,7 @@ public class RenderingHandler : MonoBehaviour
 		return false;
 	}
 
-	/*private bool IsRowInsideViewport(int y, int layer)
+    /*private bool IsRowInsideViewport(int y, int layer)
 	{
 		Camera cam;
 		if(!TryGetCurrentCamera(out cam))
@@ -443,5 +476,13 @@ public class RenderingHandler : MonoBehaviour
 		return false;
 	}*/
 
+    public enum LightingMode
+    {
+        LayerBased, AdjecentWithSun
+    }
 
+    public enum TimeOfDay
+    {
+        Midday, Morning, Night
+    }
 }
