@@ -64,6 +64,12 @@ public class RectangleGrid : MonoBehaviour
         return gameObjects.TryGetValue(new Vector3(x, y, layer), out obj);
     }
 
+    public bool IsCellFree(int x, int y, int layer)
+    {
+        short tile;
+        return !TryGetTile(x, y, layer, out tile);
+    }
+
     public void Place(GameObject obj, int x, int y, int layer)
     {
         // Clear the dest cell

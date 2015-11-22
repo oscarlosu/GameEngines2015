@@ -226,8 +226,31 @@ public class RenderingHandler : MonoBehaviour
 					rend.sprite = Tiles[tile];
 					rend.sortingOrder = layer - y;
 					// Tint
-					float tintVal = Mathf.Lerp (1 - MaxTint, 1, layer / (float)HandledGrid.LayerCount);
-					rend.color = new Color(tintVal, tintVal, tintVal);
+				    float tintVal = 1;
+				    float tintIncr = .1f;
+				    if (layer < HandledGrid.LayerCount - 1)
+				    {
+				        if (!HandledGrid.IsCellFree(x + 1, y, layer + 1))
+				        {
+				            tintVal -= tintIncr;
+                        }
+				        if (!HandledGrid.IsCellFree(x - 1, y, layer + 1))
+				        {
+				            tintVal -= tintIncr;
+                        }
+				        if (!HandledGrid.IsCellFree(x, y + 1, layer + 1))
+				        {
+				            tintVal -= tintIncr;
+                        }
+				        if (!HandledGrid.IsCellFree(x, y - 1, layer + 1))
+				        {
+				            tintVal -= tintIncr;
+                        }
+				    }
+                    // Make sure nothing becomes black.
+				    if (tintVal < MaxTint) tintVal = MaxTint;
+				    /*float tintVal = Mathf.Lerp (1 - MaxTint, 1, layer / (float)HandledGrid.LayerCount);*/ // Old layer-based lighting system.
+                    rend.color = new Color(tintVal, tintVal, tintVal);
 				}
 				// Update adjacent cells that might now be hidden
 				// Cell below
