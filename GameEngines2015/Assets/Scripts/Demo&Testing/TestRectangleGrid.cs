@@ -9,6 +9,7 @@ public class TestRectangleGrid : MonoBehaviour
     public int NX, NY, NLayer;
     public int X, Y, Layer;
 	public int FBmIterations;
+	public int Seed;
 
 
     // Use this for initialization
@@ -52,6 +53,7 @@ public class TestRectangleGrid : MonoBehaviour
         /**********************
         * Old test code.
         **********************/
+
         /*
         MyGrid.SetGridSize(NX, NY, NLayer);
         for (int layer = 0; layer < NLayer; layer++)
@@ -95,10 +97,11 @@ public class TestRectangleGrid : MonoBehaviour
 
 	float fBm(int iterations, float x, float y)
 	{
+
 		float value = 0;
 		for(int i = 1; i <= iterations; ++i)
 		{
-			value += Mathf.PerlinNoise(x * iterations, y * iterations) / iterations;
+			value += Mathf.PerlinNoise(Seed + x * iterations, Seed + y * iterations) / iterations;
 		}
 		return value;
 	}
