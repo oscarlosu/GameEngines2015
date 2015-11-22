@@ -207,6 +207,7 @@ MonoBehaviour:
   NightColourMultipliers: {x: .400000006, y: .400000006, z: 1}
   MaxTint: .5
   TintIncrease: .0599999987
+  lowestHiddenLayer: 0
 --- !u!114 &476286095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -223,7 +224,7 @@ MonoBehaviour:
   SizePredictionFrequency: 5
   SizeSamplingFrequency: 1
   BufferFactor: 1
-  HardSizeLimit: 1000
+  HardSizeLimit: 3000
 --- !u!1 &589726515
 GameObject:
   m_ObjectHideFlags: 0
