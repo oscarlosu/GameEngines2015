@@ -333,6 +333,19 @@ public class RenderingHandler : MonoBehaviour
 			lowestHiddenLayer = index;
 		}*/
 	}
+	/*struct TransparentArea
+	{
+		int startX;
+		int endX;
+		int startY;
+		int startLayer;
+	}
+	private List<TransparentArea> transparentAreas = new List<TransparentArea>();
+
+	public void MakeAreaTransparent(int startX, int endX, int startY, int startLayer)
+	{
+		transparentAreas.Add
+	}*/
 
     private Vector2 UpdateFirstCellXYInLayer(Camera cam, int layer)
     {
