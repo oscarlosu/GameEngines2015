@@ -35,6 +35,14 @@ public class TestRectangleGrid : MonoBehaviour
 				MyGrid.Place(0, x, 0, layer);
 			}
 		}
+		// Ceiling
+		for (int y = 0; y < NY; y++)
+		{
+			for (int x = 0; x < NX; x++)
+			{
+				MyGrid.Place(1, x, y, 9);
+			}
+		}
 		Handler.HideFromLayer(10);
 		return;
         for (int y = 0; y < NY; y++)

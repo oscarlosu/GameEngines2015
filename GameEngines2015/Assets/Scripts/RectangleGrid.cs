@@ -67,7 +67,8 @@ public class RectangleGrid : MonoBehaviour
     public bool IsCellFree(int x, int y, int layer)
     {
         short tile;
-        return !TryGetTile(x, y, layer, out tile);
+		GameObject obj;
+		return !TryGetTile(x, y, layer, out tile) && !TryGetObject(x, y, layer, out obj);
     }
 
     public void Place(GameObject obj, int x, int y, int layer)
