@@ -290,7 +290,7 @@ public class RenderingHandler : MonoBehaviour
                     // Tint
                     /*float tintVal = Mathf.Lerp (1 - MaxTint, 1, layer / (float)HandledGrid.LayerCount);*/ // Old layer-based lighting system.
                     rend.color = GetTintColour(x, y, layer);
-                    if (Tiles[tile].Length > 1)
+                    if (Tiles[tile].Length > 1 && !animatedTiles.ContainsKey(new Vector3(x, y, layer)))
                     {
                         animatedTiles.Add(new Vector3(x, y, layer), rend);
                     }
