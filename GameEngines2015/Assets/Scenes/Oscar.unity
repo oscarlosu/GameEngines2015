@@ -85,6 +85,12 @@ NavMeshSettings:
     cellSize: .166666672
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &190798143 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605,
+    type: 2}
+  m_PrefabInternal: {fileID: 790121916}
+  m_Script: {fileID: 11500000, guid: f09f5ee82989c964184f5c60dc877ea8, type: 3}
 --- !u!1 &454472804
 GameObject:
   m_ObjectHideFlags: 0
@@ -134,7 +140,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
 --- !u!1 &476286091
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,7 +185,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 4
 --- !u!114 &476286094
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,6 +203,9 @@ MonoBehaviour:
   - {fileID: 21300018, guid: be65ed526244d264cbdec818845988a4, type: 3}
   - {fileID: 21300032, guid: be65ed526244d264cbdec818845988a4, type: 3}
   NonViewObstructingTiles: 
+  HandledAgents:
+  - {fileID: 190798143}
+  - {fileID: 1323019019}
   RenderHidden: 0
   BufferX: 2
   BufferY: 2
@@ -216,7 +225,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 476286091}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d2322d3b86646041ac0c16f1d8b97ea, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ee84f376d8668447ae77e6fbd6c3500, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   PoolObjectPrefab: {fileID: 193424, guid: a06b87f905ff96749ac12fa8b996708f, type: 2}
@@ -310,7 +319,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
 --- !u!1001 &790121916
 Prefab:
   m_ObjectHideFlags: 0
@@ -357,3 +366,71 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
   m_IsPrefabParent: 0
+--- !u!1001 &1220755179
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 471906, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 471906, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 471906, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 471906, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 471906, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 471906, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 471906, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 471906, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+      propertyPath: Grid
+      value: 
+      objectReference: {fileID: 476286092}
+    - target: {fileID: 166914, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+      propertyPath: m_Name
+      value: GridAgent (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+      propertyPath: CellCoords.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+      propertyPath: CellCoords.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+      propertyPath: CellCoords.y
+      value: 10
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+  m_IsPrefabParent: 0
+--- !u!114 &1323019019 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605,
+    type: 2}
+  m_PrefabInternal: {fileID: 1220755179}
+  m_Script: {fileID: 11500000, guid: f09f5ee82989c964184f5c60dc877ea8, type: 3}

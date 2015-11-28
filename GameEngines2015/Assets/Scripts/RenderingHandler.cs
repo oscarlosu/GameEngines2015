@@ -7,9 +7,12 @@ public class RenderingHandler : MonoBehaviour
     /// The handled grid.
     /// </summary>
     public RectangleGrid HandledGrid;
-    public GameObjectPoolHandler RendererPool;
+    public RendererPoolHandler RendererPool;
     public List<Sprite> Tiles = new List<Sprite>();
     public List<int> NonViewObstructingTiles = new List<int>();
+
+	public List<GridAgent> HandledAgents = new List<GridAgent>();
+	private bool transparencyUpdateRequested;
 
     public bool RenderHidden;
     public int BufferX, BufferY;
@@ -39,6 +42,7 @@ public class RenderingHandler : MonoBehaviour
 		}
 		// No layer is hidden by default (zero index)
 		lowestHiddenLayer = HandledGrid.LayerCount;
+		transparencyUpdateRequested = true;
     }
 
     // Update is called once per frame
@@ -54,19 +58,28 @@ public class RenderingHandler : MonoBehaviour
                 MoveUpdate(cam);
                 lastCameraX = cam.transform.position.x;
                 lastCameraY = cam.transform.position.y;
+				transparencyUpdateRequested = true;
             }
             // Zoom out
             if (lastCameraSize < cam.orthographicSize)
             {
                 ZoomLoad(cam);
                 lastCameraSize = cam.orthographicSize;
+				transparencyUpdateRequested = true;
             }
             // Zoom in
             if (lastCameraSize > cam.orthographicSize)
             {
                 ZoomUnload(cam);
                 lastCameraSize = cam.orthographicSize;
+				transparencyUpdateRequested = true;
             }
+			if(transparencyUpdateRequested)
+			{
+				UpdateTransparency();
+			}
+
+
         }
     }
 
@@ -289,42 +302,41 @@ public class RenderingHandler : MonoBehaviour
         return false;
     }
 
-	public void UnloadTransparencyAround(int agentX, int agentY, int agentLayer, float alpha, int halfSize, int layerOffset)
+	public void UnloadCell(int x, int y, int layer)
+	{		
+		if (RendererPool.DisablePoolObject(new Vector3(x, y, layer)))
+		{
+			// Update adjacent cells that might now be visible
+			// Cell below
+			LoadCell(x, y, layer - 1);
+			// Cell behind
+			LoadCell(x, y + 1, layer);
+		}
+	}
+
+	public void RequestTransparencyUpdate()
 	{
-		Camera cam;
-		if(!TryGetCurrentCamera(out cam))
+		transparencyUpdateRequested = true;
+	}
+
+	private void UpdateTransparency()
+	{
+		foreach(GridAgent agent in HandledAgents)
 		{
-			return;
+/*			if(!IsCellWithinViewport((int)agent.OldCellCoords.x, (int)agent.OldCellCoords.y, (int)agent.OldCellCoords.z))
+			{*/
+				UnloadTransparencyAround((int)agent.OldCellCoords.x, (int)agent.OldCellCoords.y, (int)agent.OldCellCoords.z, 
+				                         agent.TransparencyAlpha, agent.TransparencyHalfSize, agent.TransparencyLayerOffset);
+			/*}*/
 		}
-		/*float maxDist = Vector2.Distance(new Vector2(agentX * HandledGrid.CellWidth, agentY * HandledGrid.CellDepth + agentLayer * HandledGrid.CellHeight), 
-		                                 new Vector2((agentX + halfSize) * HandledGrid.CellWidth, (agentY - 1) * HandledGrid.CellDepth + Mathf.Min(HandledGrid.LayerCount, layerOffset) * HandledGrid.CellHeight));*/
-		int agentProjectionOnLayers = Mathf.CeilToInt(((agentY + 1) * HandledGrid.CellDepth + (agentLayer + 1) * HandledGrid.CellHeight) / (float)HandledGrid.CellHeight);
-		int maxLayer = Mathf.Min(HandledGrid.LayerCount - 1, agentProjectionOnLayers + layerOffset);
-		for(int layer = agentLayer; layer <= maxLayer; ++layer)
+
+		foreach(GridAgent agent in HandledAgents)
 		{
-			int agentProjectionOnY = Mathf.FloorToInt((agentY * HandledGrid.CellDepth + (agentLayer - layer) * HandledGrid.CellHeight) / (float)HandledGrid.CellDepth);
-			//UpdateFirstCellXYInLayer(cam, layer);
-			for(int x = (int)Mathf.Max (agentX - halfSize, firstCell[layer].x); x <= Mathf.Min (agentX + halfSize, firstCell[layer].x + sizeX); ++x)
-			{
-				for(int y = (int)Mathf.Max (agentProjectionOnY - halfSize, firstCell[layer].y); y <= Mathf.Min (agentProjectionOnY + halfSize, firstCell[layer].y + sizeY); ++y)
-				{
-					short tile;
-					if(IsCellVisible(x, y, layer) && HandledGrid.TryGetTile(x, y, layer, out tile))
-					{
-						GameObject obj = RendererPool.GetPoolObject(new Vector3(x, y, layer));
-						SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
-						if(rend != null)
-						{
-							/*float cellAlpha = transparencyCurve.Evaluate(Vector2.Distance(new Vector2(agentX * HandledGrid.CellWidth, agentY * HandledGrid.CellDepth + agentLayer * HandledGrid.CellHeight), 
-							                                                              new Vector2(x * HandledGrid.CellWidth, y * HandledGrid.CellDepth + layer * HandledGrid.CellHeight))
-							                                             / maxDist);*/
-							float cellAlpha = 1;
-							rend.color = new Color(rend.color.r, rend.color.g, rend.color.b, cellAlpha);
-						}
-					}
-				}
-			}
+			LoadTransparencyAround((int)agent.CellCoords.x, (int)agent.CellCoords.y, (int)agent.CellCoords.z, 
+			                         agent.TransparencyAlpha, agent.TransparencyHalfSize, agent.TransparencyLayerOffset);
 		}
+		transparencyUpdateRequested = false;
+
 	}
 
 	public void LoadTransparencyAround(int agentX, int agentY, int agentLayer, float alpha, int halfSize, int layerOffset)
@@ -334,16 +346,17 @@ public class RenderingHandler : MonoBehaviour
 		{
 			return;
 		}
-		/*float maxDist = Vector2.Distance(new Vector2(agentX * HandledGrid.CellWidth, agentY * HandledGrid.CellDepth + agentLayer * HandledGrid.CellHeight), 
-		                                 new Vector2((agentX + halfSize) * HandledGrid.CellWidth, (agentY - 1) * HandledGrid.CellDepth + Mathf.Min(HandledGrid.LayerCount, layerOffset) * HandledGrid.CellHeight));*/
+		// We want to find out which layer is the first one that will made transparent in order to set the border to be semi opaque
 		int effectiveFirstLayer = 0;
 		bool isFirstTime = true;
+		// Calculate the maximum layer that overlaps with the agent
 		int agentProjectionOnLayers = Mathf.CeilToInt(((agentY + 1) * HandledGrid.CellDepth + (agentLayer + 1) * HandledGrid.CellHeight) / (float)HandledGrid.CellHeight);
+		// The layer offset improves visibility with "roofs" when the agent is near the border of the map
 		int endLayer = Mathf.Min(HandledGrid.LayerCount - 1, agentProjectionOnLayers + layerOffset);
 		for(int layer = agentLayer; layer <= endLayer; ++layer)
 		{
+			// Calculate the maximum y that overlaps with the agent in this layer
 			int agentProjectionOnY = Mathf.FloorToInt((agentY * HandledGrid.CellDepth + (agentLayer - layer) * HandledGrid.CellHeight) / (float)HandledGrid.CellDepth);
-			//UpdateFirstCellXYInLayer(cam, layer);
 			int startY = (int)Mathf.Max (agentProjectionOnY - halfSize, firstCell[layer].y);
 			int endY = (int)Mathf.Min (agentProjectionOnY + halfSize, firstCell[layer].y + sizeY);
 			for(int y = startY; y <= endY; ++y)
@@ -352,28 +365,32 @@ public class RenderingHandler : MonoBehaviour
 				int endX = (int)Mathf.Min (agentX + halfSize, firstCell[layer].x + sizeX);
 				for(int x = startX; x <= endX; ++x)
 				{
+					// We only want to affect non empty cells within the viewport
 					short tile;
 					if(IsCellVisible(x, y, layer) && HandledGrid.TryGetTile(x, y, layer, out tile))
 					{
+						// Detection for effective first layer (used for border transparency)
 						if(isFirstTime)
 						{
 							effectiveFirstLayer = layer;
 							isFirstTime = false;
 						}
+						// Update transparency so the user can see the agent through obstructing tiles
 						GameObject obj = RendererPool.GetPoolObject(new Vector3(x, y, layer));
 						SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
 						if(rend != null)
 						{
+							// Making the border semi opaque tries to convey that the space is not actually empty, just being hidden
 							float cellAlpha;
 							if(x == startX || x == endX || ((y == startY && layer == effectiveFirstLayer) || (y == endY && layer == endLayer)))
 							{
-								cellAlpha = alpha;
+								// If another agent has made this cell have a lower transparency, dont change it
+								cellAlpha = Mathf.Min (alpha, rend.color.a);
 							}
 							else
 							{
 								cellAlpha = 0;
 							}
-
 							rend.color = new Color(rend.color.r, rend.color.g, rend.color.b, cellAlpha);
 						}
 					}
@@ -382,19 +399,42 @@ public class RenderingHandler : MonoBehaviour
 		}
 	}
 
-
-    public void UnloadCell(int x, int y, int layer)
-    {
-
-        if (RendererPool.DisablePoolObject(new Vector3(x, y, layer)))
-        {
-            // Update adjacent cells that might now be visible
-            // Cell below
-            LoadCell(x, y, layer - 1);
-            // Cell behind
-            LoadCell(x, y + 1, layer);
-        }
-    }
+	public void UnloadTransparencyAround(int agentX, int agentY, int agentLayer, float alpha, int halfSize, int layerOffset)
+	{
+		Camera cam;
+		if(!TryGetCurrentCamera(out cam))
+		{
+			return;
+		}
+		// Calculate the maximum layer that overlaps with the agent
+		int agentProjectionOnLayers = Mathf.CeilToInt(((agentY + 1) * HandledGrid.CellDepth + (agentLayer + 1) * HandledGrid.CellHeight) / (float)HandledGrid.CellHeight);
+		// The layer offset improves visibility with "roofs" when the agent is near the border of the map
+		int maxLayer = Mathf.Min(HandledGrid.LayerCount - 1, agentProjectionOnLayers + layerOffset);
+		for(int layer = agentLayer; layer <= maxLayer; ++layer)
+		{
+			// Calculate the maximum y that overlaps with the agent in this layer
+			int agentProjectionOnY = Mathf.FloorToInt((agentY * HandledGrid.CellDepth + (agentLayer - layer) * HandledGrid.CellHeight) / (float)HandledGrid.CellDepth);
+			for(int x = (int)Mathf.Max (agentX - halfSize, firstCell[layer].x); x <= Mathf.Min (agentX + halfSize, firstCell[layer].x + sizeX); ++x)
+			{
+				for(int y = (int)Mathf.Max (agentProjectionOnY - halfSize, firstCell[layer].y); y <= Mathf.Min (agentProjectionOnY + halfSize, firstCell[layer].y + sizeY); ++y)
+				{
+					// We only want to affect non empty cells within the viewport
+					short tile;
+					if(IsCellVisible(x, y, layer) && HandledGrid.TryGetTile(x, y, layer, out tile))
+					{
+						// Update transparency so the user can see the agent through obstructing tiles
+						GameObject obj = RendererPool.GetPoolObject(new Vector3(x, y, layer));
+						SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
+						if(rend != null)
+						{
+							float cellAlpha = 1;
+							rend.color = new Color(rend.color.r, rend.color.g, rend.color.b, cellAlpha);
+						}
+					}
+				}
+			}
+		}
+	}
 
     private Color GetTintColour(int x, int y, int layer)
     {
@@ -562,6 +602,28 @@ public class RenderingHandler : MonoBehaviour
 			return true;
 		}
 		// If the cell is outside the viewport, it isn't visible
+		return false;
+	}
+
+	private bool IsCellWithinViewport(int x, int y, int layer)
+	{
+		Camera cam;
+		if(!TryGetCurrentCamera(out cam))
+		{
+			throw new System.NullReferenceException("Camera not found.");
+		}
+		// Is cell within the grid
+		if(!HandledGrid.IsInsideGrid(x, y, layer))
+		{
+			return false;
+		}
+		// Is the cell within the viewport
+		UpdateFirstCellXYInLayer (cam, layer);
+		UpdateSizeXY (cam);
+		if(firstCell[layer].x <= x && firstCell[layer].y <= y && firstCell[layer].x + sizeX > x && firstCell[layer].y + sizeY > y)
+		{
+			return true;
+		}
 		return false;
 	}
 

@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
-public class TestPoolHandler : GameObjectPoolHandler
+public class TestPoolHandler : RendererPoolHandler
 {
 	public List<int> KeyGenerators = new List<int>();
 

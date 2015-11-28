@@ -114,7 +114,7 @@ public abstract class GenericGameObjectPoolHandler<KeyType> : MonoBehaviour
 	/// </summary>
 	/// <returns><c>true</c>, if pool object was disabled, <c>false</c> otherwise.</returns>
 	/// <param name="key">Key.</param>
-	public bool DisablePoolObject(KeyType key)
+	virtual public bool DisablePoolObject(KeyType key)
 	{
 		GameObject obj = null;
 		if(activePool.TryGetValue(key, out obj))
