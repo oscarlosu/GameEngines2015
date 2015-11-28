@@ -13,19 +13,25 @@ public class TestRectangleGrid : MonoBehaviour
 	public int FBmIterations;
 	public int Seed;
 
+    public Sprite[] Tile1, Tile2, Tile3, Tile4;
+
 
     // Use this for initialization
     void Start()
     {
-        //MyGrid.LoadGridFromFile(Directory.GetCurrentDirectory() + @"\..\testGridSave.txt");
-        /*Debug.Log(Directory.GetCurrentDirectory());
-        MyGrid.LoadGridFromFile(Directory.GetCurrentDirectory() + @"\..\testGridFile.txt");
+        Handler.Tiles.Add(Tile1);
+        Handler.Tiles.Add(Tile2);
+        
 
+        //MyGrid.LoadGridFromFile(Directory.GetCurrentDirectory() + @"\..\testGridSave.txt");
+        Debug.Log(Directory.GetCurrentDirectory());
+        MyGrid.LoadGridFromFile(Directory.GetCurrentDirectory() + @"\..\testGridFile.txt");
+        /*
         MyGrid.RemoveLayer(1);
         MyGrid.Place(0, 0, 0, 0);
         MyGrid.SaveGridToFile(Directory.GetCurrentDirectory() + @"\..\testGridSave.txt");*/
 
-        MyGrid.SetGridSize(NX, NY, NLayer);
+        /*MyGrid.SetGridSize(NX, NY, NLayer);
         
         for (int y = 0; y < NY; y++)
         {
@@ -57,7 +63,7 @@ public class TestRectangleGrid : MonoBehaviour
                     
                 }
             }
-        }
+        }*/
 
         //Handler.HideFromLayer(5);
 
