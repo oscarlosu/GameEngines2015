@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class GridAgentTest : GridAgent
@@ -7,7 +7,8 @@ public class GridAgentTest : GridAgent
 	{
 		Ghost,
 		Fly,
-		Walk
+		WalkStrict,
+		WalkClimb
 	}
 	public MoveByDelegate AgentType;
 
@@ -88,8 +89,11 @@ public class GridAgentTest : GridAgent
 		case MoveByDelegate.Fly:
 			moveByDelegate = new CanAgentMoveByDelegate(CanFlyMoveBy);
 			break;
-		case MoveByDelegate.Walk:
-			moveByDelegate = new CanAgentMoveByDelegate(CanWalkMoveBy);
+		case MoveByDelegate.WalkStrict:
+			moveByDelegate = new CanAgentMoveByDelegate(CanWalkStrictMoveBy);
+			break;
+		case MoveByDelegate.WalkClimb:
+			moveByDelegate = new CanAgentMoveByDelegate(CanWalkClimbMoveBy);
 			break;
 		default:
 			moveByDelegate = new CanAgentMoveByDelegate(CanGhostMoveBy);

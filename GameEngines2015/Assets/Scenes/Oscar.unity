@@ -358,6 +358,10 @@ Prefab:
       propertyPath: CellCoords.z
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+      propertyPath: AgentType
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
   m_IsPrefabParent: 0
