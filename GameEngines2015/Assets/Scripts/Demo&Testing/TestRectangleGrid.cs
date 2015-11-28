@@ -16,6 +16,7 @@ public class TestRectangleGrid : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        MyGrid.LoadGridFromFile(Directory.GetCurrentDirectory() + @"\..\testGridSave.txt");
         /*Debug.Log(Directory.GetCurrentDirectory());
         MyGrid.LoadGridFromFile(Directory.GetCurrentDirectory() + @"\..\testGridFile.txt");
 
@@ -23,7 +24,7 @@ public class TestRectangleGrid : MonoBehaviour
         MyGrid.Place(0, 0, 0, 0);
         MyGrid.SaveGridToFile(Directory.GetCurrentDirectory() + @"\..\testGridSave.txt");*/
 
-        MyGrid.SetGridSize(NX, NY, NLayer);
+        /*MyGrid.SetGridSize(NX, NY, NLayer);
         
         for (int y = 0; y < NY; y++)
         {
@@ -63,7 +64,7 @@ public class TestRectangleGrid : MonoBehaviour
             delegate()
             {
                 Debug.Log("The level has now been saved!");
-            }));
+            }));*/
 
         /**********************
         * Old test code.

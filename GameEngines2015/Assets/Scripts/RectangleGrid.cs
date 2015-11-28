@@ -433,6 +433,8 @@ public class RectangleGrid : MonoBehaviour
 
         int[] gridSizes = new int[3];
 
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
         using (StreamReader reader = new StreamReader(filePath))
         {
             // First line is the grid size (width, depth, layers).
@@ -507,6 +509,8 @@ public class RectangleGrid : MonoBehaviour
                 }
             }
         }
+        stopwatch.Stop();
+        Debug.Log("Loading done (" + stopwatch.Elapsed + ")");
     }
 
     public void SaveGridToFile(string filePath, bool overwrite = true)
