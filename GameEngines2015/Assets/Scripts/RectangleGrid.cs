@@ -538,7 +538,6 @@ public class RectangleGrid : MonoBehaviour
                 {
                     for (int x = 0; x < SizeX; x++)
                     {
-                        Debug.Log("X: " + x + ", Y: " + y);
                         writer.Write(layer[x, y]);
                         if (x < SizeX - 1)
                         {
