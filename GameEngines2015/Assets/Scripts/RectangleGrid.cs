@@ -1,6 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+using UnityEditor;
+
 public class RectangleGrid : MonoBehaviour
 {
     public int CellWidth, CellDepth, CellHeight;
@@ -14,8 +18,8 @@ public class RectangleGrid : MonoBehaviour
             return grid.Count;
         }
     }
-	public int SizeX { get; private set; }
-	public int SizeY { get; private set; }
+    public int SizeX { get; private set; }
+    public int SizeY { get; private set; }
 
 
     private bool IsInitialized()
@@ -30,7 +34,7 @@ public class RectangleGrid : MonoBehaviour
 
     private void UpdateRendererLayer(int layerIndex)
     {
-        for(int x = 0; x < grid[layerIndex].GetLength(0); ++x)
+        for (int x = 0; x < grid[layerIndex].GetLength(0); ++x)
         {
             for (int y = 0; y < grid[layerIndex].GetLength(1); ++y)
             {
@@ -47,7 +51,7 @@ public class RectangleGrid : MonoBehaviour
 
     public bool TryGetTile(int x, int y, int layer, out short tile)
     {
-        if(IsInsideGrid(x, y, layer) && grid[layer][x, y] != -1)
+        if (IsInsideGrid(x, y, layer) && grid[layer][x, y] != -1)
         {
             tile = grid[layer][x, y];
             return true;
@@ -92,21 +96,21 @@ public class RectangleGrid : MonoBehaviour
         // Add to the grid
         grid[layer][x, y] = tile;
         RendHandler.UpdateCell(x, y, layer);
-		//RendHandler.LoadCell(x, y, layer);
+        //RendHandler.LoadCell(x, y, layer);
     }
 
     public void Move(int sourceX, int sourceY, int sourceLayer, int destX, int destY, int destLayer)
     {
         Vector3 sourcePos = new Vector3(sourceX, sourceY, sourceLayer);
         GameObject obj;
-        if(gameObjects.TryGetValue(sourcePos, out obj))
-        {            
+        if (gameObjects.TryGetValue(sourcePos, out obj))
+        {
             Place(obj, destX, destY, destLayer);
             // Clear the source cell, but dont destroy the object
             gameObjects.Remove(sourcePos);
         }
         else
-        {            
+        {
             Place(grid[sourceLayer][sourceX, sourceY], destX, destY, destLayer);
             // Clear the source cell
             Remove(sourceX, sourceY, sourceLayer);
@@ -124,11 +128,11 @@ public class RectangleGrid : MonoBehaviour
             // Remove object from scene
             Destroy(obj);
         }
-        else if(IsInsideGrid(x, y, layer))
+        else if (IsInsideGrid(x, y, layer))
         {
             grid[layer][x, y] = -1;
             RendHandler.UpdateCell(x, y, layer);
-			//RendHandler.UnloadCell(x, y, layer);
+            //RendHandler.UnloadCell(x, y, layer);
         }
     }
 
@@ -161,8 +165,8 @@ public class RectangleGrid : MonoBehaviour
 
     public void SetGridSize(int width, int depth, int height)
     {
-		SizeX = width;
-		SizeY = depth;
+        SizeX = width;
+        SizeY = depth;
         for (int layer = 0; layer < height; layer++)
         {
             // If the layer already exists we want to resize it
@@ -181,15 +185,15 @@ public class RectangleGrid : MonoBehaviour
                         {
                             if (x < width && y < depth)
                             {
-                                if(x < grid[layer].GetLength(0) && y < grid[layer].GetLength(1))
-                                {                                    
+                                if (x < grid[layer].GetLength(0) && y < grid[layer].GetLength(1))
+                                {
                                     resizedLayer[x, y] = grid[layer][x, y];
                                 }
                                 else
                                 {
                                     resizedLayer[x, y] = -1;
                                 }
-                                
+
                             }
                             else
                             {
@@ -212,7 +216,7 @@ public class RectangleGrid : MonoBehaviour
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        newLayer[x, y] = -1;                        
+                        newLayer[x, y] = -1;
                     }
                 }
             }
@@ -232,6 +236,7 @@ public class RectangleGrid : MonoBehaviour
             }
             grid.RemoveRange(height, grid.Count - height);
         }
+        RendHandler.HideFromLayer(LayerCount);
     }
 
     public void FillRect(short tile, int fromX, int fromY, int fromLayer, int toX, int toY, int toLayer)
@@ -285,7 +290,7 @@ public class RectangleGrid : MonoBehaviour
 
     public void MoveRect(int sourceFromX, int sourceFromY, int sourceFromLayer, int sourceToX, int sourceToY, int sourceToLayer, int destFromX, int destFromY, int destFromLayer)
     {
-        if (IsInitialized() && 
+        if (IsInitialized() &&
             IsInsideGrid(sourceFromX, sourceFromY, sourceFromLayer) && IsInsideGrid(sourceToX, sourceToY, sourceToLayer) &&
             IsInsideGrid(destFromX, destFromY, destFromLayer))
         {
@@ -409,6 +414,101 @@ public class RectangleGrid : MonoBehaviour
             // Update layer2 positions
             //UpdateLayerPositions(layerIndex2);
         }
-                
+
     }
+
+    /****************
+    * SAVE/LOAD
+    ****************/
+
+    public void LoadGridFromFile(string filePath)
+    {
+        if (!File.Exists(filePath))
+        {
+            throw new FileNotFoundException("Couldn't find file '" + filePath + "'");
+        }
+
+        int[] gridSizes = new int[3];
+
+        using (StreamReader reader = new StreamReader(filePath))
+        {
+            // First line is the grid size (width, depth, layers).
+            string gridSizeLine = reader.ReadLine();
+            if (gridSizeLine == null)
+            {
+                throw new IOException("Line missing (line 1: grid size)");
+            }
+            string[] sizes = gridSizeLine.Split(' ');
+            if (sizes.Length != 3)
+            {
+                throw new IOException("Malformed input - missing value (line 1: grid size)");
+            }
+
+            // Transform sizes to ints.
+            if (!int.TryParse(sizes[0], out gridSizes[0]))
+            {
+                throw new IOException("Malformed input - size needs to be an int (line 1: grid size)");
+            }
+            if (!int.TryParse(sizes[1], out gridSizes[1]))
+            {
+                throw new IOException("Malformed input - size needs to be an int (line 1: grid size)");
+            }
+            if (!int.TryParse(sizes[2], out gridSizes[2]))
+            {
+                throw new IOException("Malformed input - size needs to be an int (line 1: grid size)");
+            }
+
+            // Create empty grid of correct size.
+            SetGridSize(gridSizes[0], gridSizes[1], gridSizes[2]);
+
+            int currentLine = 1;
+            // For each layer, read in the grid.
+            for (int layer = 0; layer < gridSizes[2]; layer++)
+            {
+                // Read backwards, since unity's y axis is from bottom to top.
+                for (int y = gridSizes[1] - 1; y >= 0; y--)
+                {
+                    currentLine++;
+                    string line = reader.ReadLine();
+                    if (line == null)
+                    {
+                        throw new IOException("Malformed input - size of grid larger than input (line " + currentLine +
+                                              ": layer " + (layer + 1) + ")");
+                    }
+                    // If the line is empty, go to the next line (without counting).
+                    if (line.Length == 0)
+                    {
+                        y++;
+                        continue;
+                    }
+
+                    // Start reading in the values of this line.
+                    string[] row = line.Split(',');
+                    if (row.Length != gridSizes[0])
+                    {
+                        throw new IOException("Malformed input - row length is not the same as given width (line " + currentLine +
+                                              ": layer " + (layer + 1) + ")");
+                    }
+
+                    // Parse and add the shorts to the new grid.
+                    for (int x = 0; x < gridSizes[0]; x++)
+                    {
+                        short value;
+                        if (!short.TryParse(row[x], out value))
+                        {
+                            throw new IOException("Malformed input - row input needs to be a short (line " + currentLine +
+                                              ": layer " + (layer + 1) + ")");
+                        }
+                        Place(value, x, y, layer);
+                    }
+                }
+            }
+        }
+    }
+
+    public void SaveGridToFile(string filePath)
+    {
+
+    }
+
 }

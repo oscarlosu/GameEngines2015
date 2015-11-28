@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.IO;
 
 public class TestRectangleGrid : MonoBehaviour
 {
@@ -15,7 +16,11 @@ public class TestRectangleGrid : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        MyGrid.SetGridSize(NX, NY, NLayer);
+        Debug.Log(Directory.GetCurrentDirectory());
+        MyGrid.LoadGridFromFile(Directory.GetCurrentDirectory() + @"\..\testGridFile.txt");
+        //Handler.HideFromLayer(100);
+
+        /*MyGrid.SetGridSize(NX, NY, NLayer);
         
         for (int y = 0; y < NY; y++)
         {
@@ -49,7 +54,7 @@ public class TestRectangleGrid : MonoBehaviour
             }
         }
 
-		Handler.HideFromLayer(5);
+		Handler.HideFromLayer(5);*/
 
         /**********************
         * Old test code.
