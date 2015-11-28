@@ -99,12 +99,12 @@ public class GridAgent : MonoBehaviour
 		// Call delegate method to determine if the agent can move to that cell
 		if(CanMove(xInc, yInc, layerInc))
 		{
-			Grid.RendHandler.UnloadTransparencyAround((int)CellCoords.x, (int)CellCoords.y, (int)CellCoords.z, TransparencyAlpha, TransparencyHalfSize, TransparencyLayerOffset, TransparencyCurve);
+			Grid.RendHandler.UnloadTransparencyAround((int)CellCoords.x, (int)CellCoords.y, (int)CellCoords.z, TransparencyAlpha, TransparencyHalfSize, TransparencyLayerOffset);
 			// Move to cell
 			CellCoords += new Vector3(xInc, yInc, layerInc);
 			transform.position += new Vector3(xInc * Grid.CellWidth, yInc * Grid.CellDepth + layerInc * Grid.CellHeight, 0);
 			rend.sortingOrder = (int)CellCoords.z - (int)CellCoords.y;
-			Grid.RendHandler.LoadTransparencyAround((int)CellCoords.x, (int)CellCoords.y, (int)CellCoords.z, TransparencyAlpha, TransparencyHalfSize, TransparencyLayerOffset, TransparencyCurve);
+			Grid.RendHandler.LoadTransparencyAround((int)CellCoords.x, (int)CellCoords.y, (int)CellCoords.z, TransparencyAlpha, TransparencyHalfSize, TransparencyLayerOffset);
 		}
 	}
 

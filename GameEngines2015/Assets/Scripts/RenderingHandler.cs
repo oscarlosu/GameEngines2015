@@ -289,7 +289,7 @@ public class RenderingHandler : MonoBehaviour
         return false;
     }
 
-	public void UnloadTransparencyAround(int agentX, int agentY, int agentLayer, float alpha, int halfSize, int layerOffset, AnimationCurve transparencyCurve)
+	public void UnloadTransparencyAround(int agentX, int agentY, int agentLayer, float alpha, int halfSize, int layerOffset)
 	{
 		Camera cam;
 		if(!TryGetCurrentCamera(out cam))
@@ -299,14 +299,14 @@ public class RenderingHandler : MonoBehaviour
 		/*float maxDist = Vector2.Distance(new Vector2(agentX * HandledGrid.CellWidth, agentY * HandledGrid.CellDepth + agentLayer * HandledGrid.CellHeight), 
 		                                 new Vector2((agentX + halfSize) * HandledGrid.CellWidth, (agentY - 1) * HandledGrid.CellDepth + Mathf.Min(HandledGrid.LayerCount, layerOffset) * HandledGrid.CellHeight));*/
 		int agentProjectionOnLayers = Mathf.CeilToInt(((agentY + 1) * HandledGrid.CellDepth + (agentLayer + 1) * HandledGrid.CellHeight) / (float)HandledGrid.CellHeight);
-
-		for(int layer = agentLayer; layer < Mathf.Min(HandledGrid.LayerCount, agentProjectionOnLayers); ++layer)
+		int maxLayer = Mathf.Min(HandledGrid.LayerCount - 1, agentProjectionOnLayers + layerOffset);
+		for(int layer = agentLayer; layer <= maxLayer; ++layer)
 		{
 			int agentProjectionOnY = Mathf.FloorToInt((agentY * HandledGrid.CellDepth + (agentLayer - layer) * HandledGrid.CellHeight) / (float)HandledGrid.CellDepth);
 			//UpdateFirstCellXYInLayer(cam, layer);
-			for(int x = (int)Mathf.Max (agentX - halfSize, firstCell[layer].x); x < Mathf.Min (agentX + halfSize, firstCell[layer].x + sizeX); ++x)
+			for(int x = (int)Mathf.Max (agentX - halfSize, firstCell[layer].x); x <= Mathf.Min (agentX + halfSize, firstCell[layer].x + sizeX); ++x)
 			{
-				for(int y = (int)Mathf.Max (agentProjectionOnY - halfSize, firstCell[layer].y); y < Mathf.Min (agentProjectionOnY + halfSize, firstCell[layer].y + sizeY); ++y)
+				for(int y = (int)Mathf.Max (agentProjectionOnY - halfSize, firstCell[layer].y); y <= Mathf.Min (agentProjectionOnY + halfSize, firstCell[layer].y + sizeY); ++y)
 				{
 					short tile;
 					if(IsCellVisible(x, y, layer) && HandledGrid.TryGetTile(x, y, layer, out tile))
@@ -327,7 +327,7 @@ public class RenderingHandler : MonoBehaviour
 		}
 	}
 
-	public void LoadTransparencyAround(int agentX, int agentY, int agentLayer, float alpha, int halfSize, int layerOffset, AnimationCurve transparencyCurve)
+	public void LoadTransparencyAround(int agentX, int agentY, int agentLayer, float alpha, int halfSize, int layerOffset)
 	{
 		Camera cam;
 		if(!TryGetCurrentCamera(out cam))
@@ -336,27 +336,44 @@ public class RenderingHandler : MonoBehaviour
 		}
 		/*float maxDist = Vector2.Distance(new Vector2(agentX * HandledGrid.CellWidth, agentY * HandledGrid.CellDepth + agentLayer * HandledGrid.CellHeight), 
 		                                 new Vector2((agentX + halfSize) * HandledGrid.CellWidth, (agentY - 1) * HandledGrid.CellDepth + Mathf.Min(HandledGrid.LayerCount, layerOffset) * HandledGrid.CellHeight));*/
+		int effectiveFirstLayer = 0;
+		bool isFirstTime = true;
 		int agentProjectionOnLayers = Mathf.CeilToInt(((agentY + 1) * HandledGrid.CellDepth + (agentLayer + 1) * HandledGrid.CellHeight) / (float)HandledGrid.CellHeight);
-		
-		for(int layer = agentLayer; layer < Mathf.Min(HandledGrid.LayerCount, agentProjectionOnLayers); ++layer)
+		int endLayer = Mathf.Min(HandledGrid.LayerCount - 1, agentProjectionOnLayers + layerOffset);
+		for(int layer = agentLayer; layer <= endLayer; ++layer)
 		{
 			int agentProjectionOnY = Mathf.FloorToInt((agentY * HandledGrid.CellDepth + (agentLayer - layer) * HandledGrid.CellHeight) / (float)HandledGrid.CellDepth);
 			//UpdateFirstCellXYInLayer(cam, layer);
-			for(int x = (int)Mathf.Max (agentX - halfSize, firstCell[layer].x); x < Mathf.Min (agentX + halfSize, firstCell[layer].x + sizeX); ++x)
+			int startY = (int)Mathf.Max (agentProjectionOnY - halfSize, firstCell[layer].y);
+			int endY = (int)Mathf.Min (agentProjectionOnY + halfSize, firstCell[layer].y + sizeY);
+			for(int y = startY; y <= endY; ++y)
 			{
-				for(int y = (int)Mathf.Max (agentProjectionOnY - halfSize, firstCell[layer].y); y < Mathf.Min (agentProjectionOnY + halfSize, firstCell[layer].y + sizeY); ++y)
+				int startX = (int)Mathf.Max (agentX - halfSize, firstCell[layer].x);
+				int endX = (int)Mathf.Min (agentX + halfSize, firstCell[layer].x + sizeX);
+				for(int x = startX; x <= endX; ++x)
 				{
 					short tile;
 					if(IsCellVisible(x, y, layer) && HandledGrid.TryGetTile(x, y, layer, out tile))
 					{
+						if(isFirstTime)
+						{
+							effectiveFirstLayer = layer;
+							isFirstTime = false;
+						}
 						GameObject obj = RendererPool.GetPoolObject(new Vector3(x, y, layer));
 						SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
 						if(rend != null)
 						{
-							/*float cellAlpha = transparencyCurve.Evaluate(Vector2.Distance(new Vector2(agentX * HandledGrid.CellWidth, agentY * HandledGrid.CellDepth + agentLayer * HandledGrid.CellHeight), 
-							                                                              new Vector2(x * HandledGrid.CellWidth, y * HandledGrid.CellDepth + layer * HandledGrid.CellHeight))
-							                                             / maxDist);*/
-							float cellAlpha = 0;
+							float cellAlpha;
+							if(x == startX || x == endX || ((y == startY && layer == effectiveFirstLayer) || (y == endY && layer == endLayer)))
+							{
+								cellAlpha = alpha;
+							}
+							else
+							{
+								cellAlpha = 0;
+							}
+
 							rend.color = new Color(rend.color.r, rend.color.g, rend.color.b, cellAlpha);
 						}
 					}

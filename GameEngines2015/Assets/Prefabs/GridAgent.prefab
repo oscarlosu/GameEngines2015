@@ -44,8 +44,8 @@ MonoBehaviour:
   CellCoords: {x: 0, y: 0, z: 1}
   NotWalkableTileIndexes: 
   TransparencyAlpha: .5
-  TransparencyHalfSize: 5
-  TransparencyLayerOffset: 10
+  TransparencyHalfSize: 3
+  TransparencyLayerOffset: 5
   TransparencyCurve:
     serializedVersion: 2
     m_Curve: []
