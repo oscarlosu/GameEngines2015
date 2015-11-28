@@ -16,11 +16,14 @@ public class TestRectangleGrid : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Debug.Log(Directory.GetCurrentDirectory());
+        /*Debug.Log(Directory.GetCurrentDirectory());
         MyGrid.LoadGridFromFile(Directory.GetCurrentDirectory() + @"\..\testGridFile.txt");
-        //Handler.HideFromLayer(100);
 
-        /*MyGrid.SetGridSize(NX, NY, NLayer);
+        MyGrid.RemoveLayer(1);
+        MyGrid.Place(0, 0, 0, 0);
+        MyGrid.SaveGridToFile(Directory.GetCurrentDirectory() + @"\..\testGridSave.txt");*/
+
+        MyGrid.SetGridSize(NX, NY, NLayer);
         
         for (int y = 0; y < NY; y++)
         {
@@ -54,7 +57,9 @@ public class TestRectangleGrid : MonoBehaviour
             }
         }
 
-		Handler.HideFromLayer(5);*/
+        //Handler.HideFromLayer(5);
+
+        StartCoroutine(MyGrid.SaveGridToFileCoroutine(Directory.GetCurrentDirectory() + @"\..\testGridSave.txt"));
 
         /**********************
         * Old test code.

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.IO;
 using UnityEditor;
+using Debug = UnityEngine.Debug;
 
 public class RectangleGrid : MonoBehaviour
 {
@@ -506,9 +509,90 @@ public class RectangleGrid : MonoBehaviour
         }
     }
 
-    public void SaveGridToFile(string filePath)
+    public void SaveGridToFile(string filePath, bool overwrite = true)
     {
+        if (LayerCount <= 0 || SizeX <= 0 || SizeY <= 0)
+        {
+            throw new Exception("Grid with size 0 cannot be saved");
+        }
+        // If set to not overwrite and file already exists, throw an exception.
+        if (!overwrite && File.Exists(filePath))
+        {
+            throw new Exception("File already exists '" + filePath + "'");
+        }
 
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            // Write the first line, which is the grid size.
+            writer.WriteLine(SizeX + " " + SizeY + " " + LayerCount);
+
+            // Write each layer out with a space in front.
+            foreach (var layer in grid)
+            {
+                writer.WriteLine(); // The space in front.
+                for (int y = SizeY - 1; y >= 0; y--)
+                {
+                    for (int x = 0; x < SizeX; x++)
+                    {
+                        Debug.Log("X: " + x + ", Y: " + y);
+                        writer.Write(layer[x, y]);
+                        if (x < SizeX - 1)
+                        {
+                            writer.Write(",");
+                        }
+                        else
+                        {
+                            writer.WriteLine();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public IEnumerator SaveGridToFileCoroutine(string filePath, bool overwrite = true, Action callBack = null)
+    {
+        if (LayerCount <= 0 || SizeX <= 0 || SizeY <= 0)
+        {
+            throw new Exception("Grid with size 0 cannot be saved");
+        }
+        // If set to not overwrite and file already exists, throw an exception.
+        if (!overwrite && File.Exists(filePath))
+        {
+            throw new Exception("File already exists '" + filePath + "'");
+        }
+
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            // Write the first line, which is the grid size.
+            writer.WriteLine(SizeX + " " + SizeY + " " + LayerCount);
+
+            // Write each layer out with a space in front.
+            foreach (var layer in grid)
+            {
+                writer.WriteLine(); // The space in front.
+                for (int y = SizeY - 1; y >= 0; y--)
+                {
+                    for (int x = 0; x < SizeX; x++)
+                    {
+                        writer.Write(layer[x, y]);
+                        if (x < SizeX - 1)
+                        {
+                            writer.Write(",");
+                        }
+                        else
+                        {
+                            writer.WriteLine();
+                        }
+                    }
+                    yield return null;
+                }
+            }
+        }
+        stopwatch.Stop();
+        Debug.Log("Saving done (" + stopwatch.Elapsed + ")");
     }
 
 }
