@@ -13,7 +13,7 @@ public class TestRectangleGrid : MonoBehaviour
 	public int FBmIterations;
 	public int Seed;
 
-    public Sprite[] Tile1, Tile2, Tile3, Tile4;
+    public SpriteList Tile1, Tile2, Tile3, Tile4;
 
 
     // Use this for initialization

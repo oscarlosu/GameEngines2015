@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor;
@@ -10,7 +11,7 @@ public class RenderingHandler : MonoBehaviour
     /// </summary>
     public RectangleGrid HandledGrid;
     public GameObjectPoolHandler RendererPool;
-    public List<Sprite[]> Tiles = new List<Sprite[]>();
+    public List<SpriteList> Tiles = new List<SpriteList>();
     public List<int> NonViewObstructingTiles = new List<int>();
 
     public bool RenderHidden;
@@ -512,23 +513,20 @@ public class RenderingHandler : MonoBehaviour
         Midday, Morning, Night
     }
 }
-/*
-[CustomEditor(typeof(RenderingHandler))]
-public class RenderingHandlerEditor : Editor
+
+[Serializable]
+public class SpriteList
 {
+    public Sprite[] Tile;
 
-    public override void OnInspectorGUI()
+    public Sprite this[int i]
     {
-        DrawDefaultInspector();
-
-        RenderingHandler t = (RenderingHandler)target;
-
-        GUILayout.Button("AddSprite")
-        {
-            t.Tiles.a
-        }
-
+        get { return Tile[i]; }
+        set { Tile[i] = value; }
     }
 
+    public int Length
+    {
+        get { return Tile.Length; }
+    }
 }
-*/

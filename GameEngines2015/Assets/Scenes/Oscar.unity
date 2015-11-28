@@ -124,12 +124,13 @@ MonoBehaviour:
   FBmIterations: 5
   Seed: 0
   Tile1:
-  - {fileID: 21300000, guid: be65ed526244d264cbdec818845988a4, type: 3}
-  - {fileID: 21300038, guid: be65ed526244d264cbdec818845988a4, type: 3}
+    Tile: []
   Tile2:
-  - {fileID: 21300032, guid: be65ed526244d264cbdec818845988a4, type: 3}
-  Tile3: []
-  Tile4: []
+    Tile: []
+  Tile3:
+    Tile: []
+  Tile4:
+    Tile: []
 --- !u!4 &454472806
 Transform:
   m_ObjectHideFlags: 0
@@ -200,6 +201,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HandledGrid: {fileID: 476286092}
   RendererPool: {fileID: 476286095}
+  Tiles:
+  - Tile:
+    - {fileID: 21300000, guid: be65ed526244d264cbdec818845988a4, type: 3}
+    - {fileID: 21300018, guid: be65ed526244d264cbdec818845988a4, type: 3}
+  - Tile:
+    - {fileID: 21300032, guid: be65ed526244d264cbdec818845988a4, type: 3}
   NonViewObstructingTiles: 
   RenderHidden: 0
   BufferX: 2
