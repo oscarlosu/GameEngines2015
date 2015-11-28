@@ -593,6 +593,11 @@ public class RectangleGrid : MonoBehaviour
         }
         stopwatch.Stop();
         Debug.Log("Saving done (" + stopwatch.Elapsed + ")");
+        // If a callback method was passed, invoke it!
+        if (callBack != null)
+        {
+            callBack();
+        }
     }
 
 }
