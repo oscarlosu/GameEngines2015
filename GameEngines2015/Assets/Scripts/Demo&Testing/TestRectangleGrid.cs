@@ -20,7 +20,7 @@ public class TestRectangleGrid : MonoBehaviour
 
 		// Transparency testing
 		// Floor
-		for (int y = 0; y < NY; y++)
+		/*for (int y = 0; y < NY; y++)
 		{
 			for (int x = 0; x < NX; x++)
 			{
@@ -44,7 +44,7 @@ public class TestRectangleGrid : MonoBehaviour
 			}
 		}
 		Handler.HideFromLayer(10);
-		return;
+		return;*/
         for (int y = 0; y < NY; y++)
         {
             for (int x = 0; x < NX; x++)
