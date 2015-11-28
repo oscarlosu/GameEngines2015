@@ -61,11 +61,11 @@ public class TestRectangleGrid : MonoBehaviour
 
         //Handler.HideFromLayer(5);
 
-        /*StartCoroutine(MyGrid.SaveGridToFileCoroutine(Directory.GetCurrentDirectory() + @"\..\testGridSave.txt", true,
+        StartCoroutine(MyGrid.SaveGridToFileCoroutine(Directory.GetCurrentDirectory() + @"\..\testGridSave.txt", true,
             delegate()
             {
                 Debug.Log("The level has now been saved!");
-            }));*/
+            }));
 
         /**********************
         * Old test code.
