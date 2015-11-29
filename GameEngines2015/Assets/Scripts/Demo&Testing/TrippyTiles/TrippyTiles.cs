@@ -30,19 +30,16 @@ public class TrippyTiles : MonoBehaviour
                 if (Random.Range(0, 100) < 20)
                 {
                     Grid.Place(4, x, y, 2);
-                    Debug.Log("Placing stone");
                 }
                 // 10% chance for gold (if not stone).
                 else if (Random.Range(0, 100) < 10)
                 {
                     Grid.Place(5, x, y, 2);
-                    Debug.Log("Placing gold");
                 }
                 // 80% chance for dirt (if not stone or gold).
                 else if (Random.Range(0, 100) < 80)
                 {
                     Grid.Place(3, x, y, 2);
-                    Debug.Log("Placing dirt");
                 }
             }
         }

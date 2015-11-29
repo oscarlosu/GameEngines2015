@@ -356,7 +356,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 477314, guid: 22ed1bf124ac1f1469822872a792313a, type: 2}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 11482746, guid: 22ed1bf124ac1f1469822872a792313a, type: 2}
       propertyPath: Grid
@@ -366,6 +366,10 @@ Prefab:
       propertyPath: CollectedGoldGUI
       value: 
       objectReference: {fileID: 1457854948}
+    - target: {fileID: 11482746, guid: 22ed1bf124ac1f1469822872a792313a, type: 2}
+      propertyPath: MaxYIndex
+      value: 41
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 22ed1bf124ac1f1469822872a792313a, type: 2}
   m_IsPrefabParent: 0

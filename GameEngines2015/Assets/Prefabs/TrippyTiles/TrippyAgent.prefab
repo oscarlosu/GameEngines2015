@@ -113,8 +113,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Grid: {fileID: 0}
   CellCoords:
-    X: 0
-    Y: 0
+    X: 1
+    Y: 40
     Layer: 2
   NotWalkableTileIndexes: 04000000
   MaxYIndex: 100
@@ -132,8 +132,8 @@ MonoBehaviour:
   GoldSoundFX: {fileID: 8300000, guid: b58fd6448710ba5469b26c0057e2b2ca, type: 3}
   MushroomSoundFX: {fileID: 8300000, guid: 5608ea258952db845a89cf394f6ea051, type: 3}
   CollectedGoldGUI: {fileID: 0}
-  FacingRight: {fileID: 0}
-  FacingLeft: {fileID: 0}
+  FacingRight: {fileID: 21300000, guid: 9e823b0a29e1b804c8d4ddb4bc6cfb09, type: 3}
+  FacingLeft: {fileID: 21300002, guid: 9e823b0a29e1b804c8d4ddb4bc6cfb09, type: 3}
   GoldCounter: 0
   MushroomCounter: 0
 --- !u!212 &21204798
@@ -160,7 +160,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 9e823b0a29e1b804c8d4ddb4bc6cfb09, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &100100000
 Prefab:
