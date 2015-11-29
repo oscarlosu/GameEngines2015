@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// The rendering handler renders the assigned grid to the given camera (or the main camera, if none given).
@@ -100,7 +101,15 @@ public class RenderingHandler : MonoBehaviour
             short tile;
             if (HandledGrid.TryGetTile((int)entry.Key.X, (int)entry.Key.Y, (int)entry.Key.Layer, out tile))
             {
-                entry.Value.sprite = Tiles[tile][animationIteration % Tiles[tile].Length];
+                if (Tiles[tile].Randomize)
+                {
+                    entry.Value.sprite = Tiles[tile][Random.Range(0, Tiles[tile].Length)];
+                }
+                else
+                {
+                    entry.Value.sprite = Tiles[tile][animationIteration % Tiles[tile].Length];
+                }
+                
             }
         }
     }
@@ -530,6 +539,7 @@ public class RenderingHandler : MonoBehaviour
 public class SpriteList
 {
     public Sprite[] Tile;
+    public bool Randomize;
 
     public Sprite this[int i]
     {

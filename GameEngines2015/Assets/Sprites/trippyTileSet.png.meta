@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 98cf844e63046b34c9803dd29019a92b
-timeCreated: 1448828275
+timeCreated: 1448839231
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -42,6 +42,9 @@ TextureImporter:
     21300070: WallTile
     21300072: trippyTileSet_30
     21300074: trippyTileSet_31
+    21300076: DirtTrippyOneTile
+    21300078: DirtTrippyTwoTile
+    21300080: DirtTrippyThreeTile
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -402,6 +405,36 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 394
+        y: 10
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: DirtTrippyOneTile
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 10
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: DirtTrippyTwoTile
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 10
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: DirtTrippyThreeTile
+      rect:
+        serializedVersion: 2
+        x: 522
         y: 10
         width: 64
         height: 64

@@ -171,9 +171,11 @@ public class RectangleGrid : MonoBehaviour
         // Clear dest cell
         Remove(x, y, layer);
         // Add to the grid
-        grid[layer][x, y] = tile;
-        RendHandler.UpdateCell(x, y, layer);
-        //RendHandler.LoadCell(x, y, layer);
+	    if (x >= 0 && x < SizeX && y >= 0 && y < SizeY && layer >= 0 && layer < LayerCount)
+	    {
+	        grid[layer][x, y] = tile;
+	        RendHandler.UpdateCell(x, y, layer);
+	    }
     }
 	/// <summary>
 	/// Moves the content of the specified source cell to the specified destination cell. Removes anything at the given destiantion cell.

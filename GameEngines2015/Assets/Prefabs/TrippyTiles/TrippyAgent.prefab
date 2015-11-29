@@ -117,7 +117,7 @@ MonoBehaviour:
     Y: 40
     Layer: 2
   NotWalkableTileIndexes: 04000000
-  MaxYIndex: 41
+  MaxYIndex: 40
   SkyBackground: 0
   GroundBackground: 1
   Grass: 2
@@ -131,6 +131,11 @@ MonoBehaviour:
   DiggingSoundFX: {fileID: 8300000, guid: 49aef22175949ff46a63bfd59f5ecffb, type: 3}
   GoldSoundFX: {fileID: 8300000, guid: b58fd6448710ba5469b26c0057e2b2ca, type: 3}
   MushroomSoundFX: {fileID: 8300000, guid: 5608ea258952db845a89cf394f6ea051, type: 3}
+  RendHandler: {fileID: 0}
+  AltDirtSprites:
+  - {fileID: 21300076, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
+  - {fileID: 21300078, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
+  - {fileID: 21300080, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
   CollectedGoldGUI: {fileID: 0}
   FacingRight: {fileID: 21300000, guid: 9e823b0a29e1b804c8d4ddb4bc6cfb09, type: 3}
   FacingLeft: {fileID: 21300002, guid: 9e823b0a29e1b804c8d4ddb4bc6cfb09, type: 3}

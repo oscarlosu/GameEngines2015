@@ -214,7 +214,7 @@ MonoBehaviour:
   NightColourMultipliers: {x: .400000006, y: .400000006, z: 1}
   MaxTint: 0
   TintIncrease: .0599999987
-  AnimationNextTime: .0500000007
+  AnimationNextTime: .300000012
   Cam: {fileID: 0}
 --- !u!114 &476286095
 MonoBehaviour:
@@ -293,7 +293,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 360
+  orthographic size: 460
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -362,6 +362,10 @@ Prefab:
       propertyPath: Grid
       value: 
       objectReference: {fileID: 476286092}
+    - target: {fileID: 11482746, guid: 22ed1bf124ac1f1469822872a792313a, type: 2}
+      propertyPath: RendHandler
+      value: 
+      objectReference: {fileID: 476286094}
     - target: {fileID: 11482746, guid: 22ed1bf124ac1f1469822872a792313a, type: 2}
       propertyPath: CollectedGoldGUI
       value: 

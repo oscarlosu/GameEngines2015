@@ -20,7 +20,26 @@ public class TrippyTiles : MonoBehaviour
         // TODO It should be possible to get the grid's current size from the grid.
 
         // Place bushes and trees.
-        //for ()
+        for (int x = 0; x < 20; x++)
+        {
+            // 30% chance for a bush.
+            if (Random.Range(0, 100) < 30)
+            {
+                Grid.Place(9, x, 40, 1);
+            }
+            // 30% chance for a tree.
+            else if (Random.Range(0, 100) < 30)
+            {
+                Grid.Place(6, x, 40, 1);
+                Grid.Place(6, x, 41, 1);
+                Grid.Place(7, x, 42, 1);
+                Grid.Place(7, x - 1, 42, 1);
+                Grid.Place(7, x + 1, 42, 1);
+                Grid.Place(7, x, 43, 1);
+                // Ensure that two trees can't be directly besides each other.
+                x++;
+            }
+        }
 
         // Place underground blocks.
         for (int y = 38; y >= 0; y--)
@@ -45,6 +64,19 @@ public class TrippyTiles : MonoBehaviour
             }
         }
 
+        // Place three underground rooms with a mushroom in each.
+        int startX, startY, roomWidth, roomHeight;
+        roomWidth = 3;
+        roomHeight = 2;
+        for (int i = 0; i < 3; i++)
+        {
+            startX = Random.Range(1, 19 - roomWidth - 1);
+            startY = Random.Range(2 + roomHeight, 20);
+            Grid.FillRect(-1, startX, startY, 2, startX + roomWidth - 1, startY - roomHeight + 1, 2);
+            Grid.Place(8, startX + 1, startY - 1, 2);
+        }
+
+
     }
 
     // Update is called once per frame
@@ -52,7 +84,7 @@ public class TrippyTiles : MonoBehaviour
     {
 		if(Input.GetKeyDown (KeyCode.S))
 		{
-			Grid.SaveGridToFileCoroutine(Directory.GetCurrentDirectory() + @"\..\TrippyTilesDemo.txt");
+			StartCoroutine(Grid.SaveGridToFileCoroutine(Directory.GetCurrentDirectory() + @"\..\TrippyTilesDemo.txt"));
 		}
 		if(Input.GetKeyDown (KeyCode.L))
 		{
