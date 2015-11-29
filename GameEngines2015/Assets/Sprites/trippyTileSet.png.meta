@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 98cf844e63046b34c9803dd29019a92b
-timeCreated: 1448827687
+timeCreated: 1448828275
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -16,9 +16,9 @@ TextureImporter:
     21300018: trippyTileSet_9
     21300020: trippyTileSet_10
     21300022: DirtTile
-    21300024: trippyTileSet_12
+    21300024: DirtTile
     21300026: TreeTrunkTile
-    21300028: trippyTileSet_14
+    21300028: TreeTrunkTile
     21300030: trippyTileSet_15
     21300032: trippyTileSet_16
     21300034: trippyTileSet_17
@@ -28,16 +28,24 @@ TextureImporter:
     21300042: BushOneTile
     21300044: BushTwoTile
     21300046: BambooTile
-    21300048: trippyTileSet_24
+    21300048: BambooTile
     21300050: trippyTileSet_25
     21300052: StoneTwoTile
     21300054: StoneTwoMossyTile
-    21300056: trippyTileSet_28
-    21300058: trippyTileSet_29
+    21300056: StoneTwoTile
+    21300058: StoneTwoMossyTile
+    21300060: StoneOneTile
+    21300062: AirTile
+    21300064: trippyTileSet_13
+    21300066: trippyTileSet_18
+    21300068: trippyTileSet_26
+    21300070: WallTile
+    21300072: trippyTileSet_30
+    21300074: trippyTileSet_31
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 1
+    enableMipMap: 0
     linearTexture: 0
     correctGamma: 0
     fadeOut: 0
@@ -59,7 +67,7 @@ TextureImporter:
   textureFormat: -1
   maxTextureSize: 2048
   textureSettings:
-    filterMode: -1
+    filterMode: 0
     aniso: 16
     mipBias: -1
     wrapMode: 1
@@ -90,7 +98,7 @@ TextureImporter:
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: StoneTile
+    - name: StoneOneTile
       rect:
         serializedVersion: 2
         x: 74
@@ -190,6 +198,16 @@ TextureImporter:
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
+    - name: AirTile
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 138
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: DirtTile
       rect:
         serializedVersion: 2
@@ -200,7 +218,7 @@ TextureImporter:
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: trippyTileSet_12
+    - name: trippyTileSet_13
       rect:
         serializedVersion: 2
         x: 266
@@ -220,7 +238,7 @@ TextureImporter:
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: trippyTileSet_14
+    - name: trippyTileSet_15
       rect:
         serializedVersion: 2
         x: 394
@@ -230,7 +248,7 @@ TextureImporter:
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: trippyTileSet_15
+    - name: trippyTileSet_16
       rect:
         serializedVersion: 2
         x: 522
@@ -240,7 +258,7 @@ TextureImporter:
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: trippyTileSet_16
+    - name: trippyTileSet_17
       rect:
         serializedVersion: 2
         x: 10
@@ -250,7 +268,7 @@ TextureImporter:
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: trippyTileSet_17
+    - name: trippyTileSet_18
       rect:
         serializedVersion: 2
         x: 74
@@ -320,7 +338,7 @@ TextureImporter:
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: trippyTileSet_24
+    - name: trippyTileSet_25
       rect:
         serializedVersion: 2
         x: 522
@@ -330,11 +348,21 @@ TextureImporter:
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: trippyTileSet_25
+    - name: trippyTileSet_26
       rect:
         serializedVersion: 2
         x: 74
         y: 10
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: WallTile
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 9
         width: 64
         height: 64
       alignment: 6
@@ -360,7 +388,7 @@ TextureImporter:
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: trippyTileSet_28
+    - name: trippyTileSet_30
       rect:
         serializedVersion: 2
         x: 330
@@ -370,7 +398,7 @@ TextureImporter:
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: trippyTileSet_29
+    - name: trippyTileSet_31
       rect:
         serializedVersion: 2
         x: 394
