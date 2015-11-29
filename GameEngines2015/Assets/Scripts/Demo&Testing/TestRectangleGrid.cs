@@ -19,19 +19,19 @@ public class TestRectangleGrid : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Handler.Tiles.Add(Tile1);
-        Handler.Tiles.Add(Tile2);
+        /*Handler.Tiles.Add(Tile1);
+        Handler.Tiles.Add(Tile2);*/
         
 
         //MyGrid.LoadGridFromFile(Directory.GetCurrentDirectory() + @"\..\testGridSave.txt");
-        Debug.Log(Directory.GetCurrentDirectory());
-        MyGrid.LoadGridFromFile(Directory.GetCurrentDirectory() + @"\..\testGridFile.txt");
+        /*Debug.Log(Directory.GetCurrentDirectory());
+        MyGrid.LoadGridFromFile(Directory.GetCurrentDirectory() + @"\..\testGridFile.txt");*/
         /*
         MyGrid.RemoveLayer(1);
         MyGrid.Place(0, 0, 0, 0);
         MyGrid.SaveGridToFile(Directory.GetCurrentDirectory() + @"\..\testGridSave.txt");*/
 
-        /*MyGrid.SetGridSize(NX, NY, NLayer);
+        MyGrid.SetGridSize(NX, NY, NLayer);
         
         for (int y = 0; y < NY; y++)
         {
@@ -63,15 +63,15 @@ public class TestRectangleGrid : MonoBehaviour
                     
                 }
             }
-        }*/
+        }
 
         //Handler.HideFromLayer(5);
 
-        StartCoroutine(MyGrid.SaveGridToFileCoroutine(Directory.GetCurrentDirectory() + @"\..\testGridSave.txt", true,
+        /*StartCoroutine(MyGrid.SaveGridToFileCoroutine(Directory.GetCurrentDirectory() + @"\..\testGridSave.txt", true,
             delegate()
             {
                 Debug.Log("The level has now been saved!");
-            }));
+            }));*/
 
         /**********************
         * Old test code.
