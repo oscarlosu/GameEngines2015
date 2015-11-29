@@ -24,19 +24,22 @@ public class RenderingHandler : MonoBehaviour
 
     private float lastCameraSize;
     private float lastCameraX, lastCameraY;
+	public Camera cam;
 
 	public int lowestHiddenLayer;
 
     // Use this for initialization
     void Awake()
     {
-		Camera cam;
-		if (TryGetCurrentCamera(out cam))
+		if (cam == null)
 		{
-			lastCameraSize = 0;
-			lastCameraX = cam.transform.position.x;
-			lastCameraY = cam.transform.position.y;
+			cam = Camera.main;
+
 		}
+		lastCameraSize = 0;
+		Vector3 camPos = transform.TransformPoint(cam.transform.position);
+		lastCameraX = camPos.x;
+		lastCameraY = camPos.y;
 		// No layer is hidden by default (zero index)
 		lowestHiddenLayer = HandledGrid.LayerCount;
     }
@@ -44,38 +47,38 @@ public class RenderingHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Camera cam;
-        if (TryGetCurrentCamera(out cam))
+        if (cam != null)
         {
+			Vector3 camPos = transform.TransformPoint(cam.transform.position);
             // Move with camera
-            if (Mathf.Abs(lastCameraX - cam.transform.position.x) > HandledGrid.CellWidth ||
-               Mathf.Abs(lastCameraY - cam.transform.position.y) > HandledGrid.CellDepth)
+			if (Mathf.Abs(lastCameraX - camPos.x) > HandledGrid.CellWidth ||
+			    Mathf.Abs(lastCameraY - camPos.y) > HandledGrid.CellDepth)
             {
-                MoveUpdate(cam);
-                lastCameraX = cam.transform.position.x;
-                lastCameraY = cam.transform.position.y;
+                MoveUpdate();
+				lastCameraX = camPos.x;
+				lastCameraY = camPos.y;
             }
             // Zoom out
             if (lastCameraSize < cam.orthographicSize)
             {
-                ZoomLoad(cam);
+                ZoomLoad();
                 lastCameraSize = cam.orthographicSize;
             }
             // Zoom in
             if (lastCameraSize > cam.orthographicSize)
             {
-                ZoomUnload(cam);
+                ZoomUnload();
                 lastCameraSize = cam.orthographicSize;
             }
         }
     }
 
-    private void MoveUpdate(Camera cam)
+    private void MoveUpdate()
     {
         int countUnload = 0, countLoad = 0;
         for (int layer = 0; layer < HandledGrid.LayerCount; ++layer)
         {
-            Vector2 oldFirstCell = UpdateFirstCellXYInLayer(cam, layer);
+            Vector2 oldFirstCell = UpdateFirstCellXYInLayer(layer);
 
 			// Unload
 			for(int y = (int)oldFirstCell.y; y < oldFirstCell.y + sizeY; ++y)
@@ -149,24 +152,15 @@ public class RenderingHandler : MonoBehaviour
 		ZoomLoad();
 	}
 
-	public void ZoomLoad()
-	{
-		Camera cam;
-		if (TryGetCurrentCamera(out cam))
-		{
-			ZoomLoad(cam);
-		}
-	}
-
-    private void ZoomLoad(Camera cam)
+    private void ZoomLoad()
     {
 		int oldSizeX = sizeX;
 		int oldSizeY = sizeY;
-		UpdateSizeXY (cam);
+		UpdateSizeXY ();
 		int count = 0;
 		for(int layer = 0; layer < HandledGrid.LayerCount; ++layer)
 		{
-			Vector2 oldFirstCell = UpdateFirstCellXYInLayer (cam, layer);
+			Vector2 oldFirstCell = UpdateFirstCellXYInLayer (layer);
 			// Skip all the layers that are hidden
 			if(layer >= lowestHiddenLayer)
 			{
@@ -194,24 +188,15 @@ public class RenderingHandler : MonoBehaviour
 		Debug.Log ("ZoomLoad iterations count: " + count);
     }
 
-    public void ZoomUnload()
-    {
-        Camera cam;
-        if (TryGetCurrentCamera(out cam))
-        {
-            ZoomUnload(cam);
-        }
-    }
-
-	private void ZoomUnload(Camera cam)
+	private void ZoomUnload()
 	{
 		int oldSizeX = sizeX;
 		int oldSizeY = sizeY;
-		UpdateSizeXY (cam);
+		UpdateSizeXY ();
 		int count = 0;
 		for(int layer = 0; layer < HandledGrid.LayerCount; ++layer)
 		{
-			Vector2 oldFirstCell = UpdateFirstCellXYInLayer(cam, layer);
+			Vector2 oldFirstCell = UpdateFirstCellXYInLayer(layer);
 			for(int y = (int)oldFirstCell.y; y < oldFirstCell.y + oldSizeY; ++y)
 			{
 				// We want to skip any updates outside the grid
@@ -355,35 +340,14 @@ public class RenderingHandler : MonoBehaviour
 		index = Mathf.Clamp(index, 0, HandledGrid.LayerCount);
 		lowestHiddenLayer = index;
 		ZoomUpdate();
-		/*if(lowestHiddenLayer > index)
-		{
-			lowestHiddenLayer = index;
-
-		}
-		else if(lowestHiddenLayer < index)
-		{
-			lowestHiddenLayer = index;
-		}*/
 	}
-	/*struct TransparentArea
-	{
-		int startX;
-		int endX;
-		int startY;
-		int startLayer;
-	}
-	private List<TransparentArea> transparentAreas = new List<TransparentArea>();
 
-	public void MakeAreaTransparent(int startX, int endX, int startY, int startLayer)
-	{
-		transparentAreas.Add
-	}*/
-
-    private Vector2 UpdateFirstCellXYInLayer(Camera cam, int layer)
+    private Vector2 UpdateFirstCellXYInLayer(int layer)
     {
+		Vector3 camPos = transform.TransformPoint(cam.transform.position);
         float camHalfWidth = cam.aspect * cam.orthographicSize;
-        int firstX = Mathf.FloorToInt((Camera.main.transform.position.x - camHalfWidth) / HandledGrid.CellWidth) - BufferX;
-        int firstY = Mathf.FloorToInt((Camera.main.transform.position.y - Camera.main.orthographicSize - HandledGrid.CellHeight * (layer)) / HandledGrid.CellDepth) - BufferY;
+		int firstX = Mathf.FloorToInt((camPos.x - camHalfWidth) / HandledGrid.CellWidth) - BufferX;
+		int firstY = Mathf.FloorToInt((camPos.y - cam.orthographicSize - HandledGrid.CellHeight * (layer)) / HandledGrid.CellDepth) - BufferY;
         // If there is an old value for that layer, return it
         Vector2 old;
         if (firstCell.ContainsKey(layer))
@@ -400,34 +364,15 @@ public class RenderingHandler : MonoBehaviour
         return old;
     }
 
-    private void UpdateSizeXY(Camera cam)
+    private void UpdateSizeXY()
     {
         float camHalfWidth = cam.aspect * cam.orthographicSize;
         sizeX = Mathf.CeilToInt(2 * camHalfWidth / HandledGrid.CellWidth) + 2 * BufferX;
         sizeY = Mathf.CeilToInt(2 * cam.orthographicSize / HandledGrid.CellDepth) + 2 * BufferY;
     }
 
-    private bool TryGetCurrentCamera(out Camera cam)
-    {
-        if (Application.isPlaying)
-        {
-            cam = Camera.main;
-            return true;
-        }
-        else
-        {
-            throw new System.NotImplementedException("TryGetCurrentCamera is not implemented for !Application.isPlaying.");
-        }
-    }
-
-
 	private bool IsCellVisible(int x, int y, int layer)
 	{
-		Camera cam;
-		if(!TryGetCurrentCamera(out cam))
-		{
-			throw new System.NullReferenceException("Camera not found.");
-		}
 		// If the requested layer is not part of the grid, return false
 		if(layer < 0 || layer >= HandledGrid.LayerCount)
 		{
@@ -439,8 +384,8 @@ public class RenderingHandler : MonoBehaviour
 			return false;
 		}
 		// Is the cell within the viewport
-		UpdateFirstCellXYInLayer (cam, layer);
-		UpdateSizeXY (cam);
+		UpdateFirstCellXYInLayer (layer);
+		UpdateSizeXY ();
 		if(firstCell[layer].x <= x && firstCell[layer].y <= y && firstCell[layer].x + sizeX > x && firstCell[layer].y + sizeY > y)
 		{
 			// Is the cell hidden by other cells
@@ -458,23 +403,6 @@ public class RenderingHandler : MonoBehaviour
 		// If the cell is outside the viewport, it isn't visible
 		return false;
 	}
-
-    /*private bool IsRowInsideViewport(int y, int layer)
-	{
-		Camera cam;
-		if(!TryGetCurrentCamera(out cam))
-		{
-			throw new System.NullReferenceException("Camera not found.");
-		}
-
-		UpdateFirstCellXYInLayer (cam, layer);
-		UpdateSizeXY (cam);
-		if(firstY <= y && firstY + sizeY > y)
-		{
-			return true;
-		}
-		return false;
-	}*/
 
     public enum LightingMode
     {

@@ -13,7 +13,7 @@ public class GridAgentTest : GridAgent
 	public MoveByDelegate AgentType;
 
 	// Use this for initialization
-	void Start ()
+	new void Start ()
 	{
 		base.Start();
 	}
