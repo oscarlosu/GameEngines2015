@@ -112,8 +112,8 @@ public class RenderingHandler : MonoBehaviour
         {
             Vector3 camPos = transform.TransformPoint(Cam.transform.position);
             // Move with camera
-            if (Mathf.Abs(lastCameraX - camPos.x) > HandledGrid.CellWidth ||
-                Mathf.Abs(lastCameraY - camPos.y) > HandledGrid.CellDepth)
+            if (Mathf.Abs(lastCameraX - camPos.x) >= HandledGrid.CellWidth ||
+                Mathf.Abs(lastCameraY - camPos.y) >= HandledGrid.CellDepth)
             {
                 MoveUpdate();
                 lastCameraX = camPos.x;

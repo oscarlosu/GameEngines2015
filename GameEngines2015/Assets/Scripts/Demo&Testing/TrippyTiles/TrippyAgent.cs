@@ -21,6 +21,9 @@ public class TrippyAgent : GridAgent
 	public AudioClip GoldSoundFX;
 	public AudioClip MushroomSoundFX;
 
+	public RenderingHandler RendHandler;
+	public List<Sprite> AltDirtSprites;
+
 	public UnityEngine.UI.Text CollectedGoldGUI;
 
 	public Sprite FacingRight;
@@ -30,12 +33,14 @@ public class TrippyAgent : GridAgent
 	public int MushroomCounter;
 
 	private AudioSource audioPlayer;
+	private Camera cam;
 
 	// Use this for initialization
 	new void Start ()
 	{
 		base.Start ();
 		audioPlayer = GetComponent<AudioSource>();
+		cam = Camera.main;
 	}
 	
 	// Update is called once per frame
@@ -66,6 +71,7 @@ public class TrippyAgent : GridAgent
 
 	public bool Action(int x, int y, int layer, out int outX, out int outY, out int outLayer)
 	{
+		bool allowed = false;
 		outX = x;
 		outY = y;
 		outLayer = layer;
@@ -93,7 +99,7 @@ public class TrippyAgent : GridAgent
 			// Play digging sound
 			audioPlayer.clip = DiggingSoundFX;
 			audioPlayer.Play();
-			return true;
+			allowed = true;
 		}
 		// Can remove gold increasing the gold counter
 		if(tile == Gold)
@@ -104,24 +110,51 @@ public class TrippyAgent : GridAgent
 			// Play gold mining sound
 			audioPlayer.clip = GoldSoundFX;
 			audioPlayer.Play();
-			return true;
+			allowed = true;
 		}
 		// Can eat mushrooms
 		if(tile == Mushrooms)
 		{
 			Grid.Remove(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer);
 			++MushroomCounter;
+			Trippiness();
 			// Play mushroom eating sound
 			audioPlayer.clip = MushroomSoundFX;
 			audioPlayer.Play();
-			return true;
+			allowed = true;
 		}
 		// Can move into empty tiles if over background ground or sky
 		Grid.TryGetTile(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer - 2, out tile);
 		if(tile == GroundBackground || tile == SkyBackground)
 		{
-			return true;
+			allowed = true;
 		}
-		return false;
+
+		if(allowed)
+		{
+			if(cam.transform.position.y > 360 && y < 0)
+			{
+
+				cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y + y * Grid.CellDepth, cam.transform.position.z);
+			}
+			else if(y > 0)
+			{
+				
+				cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y + y * Grid.CellDepth, cam.transform.position.z);
+			}
+
+		}
+
+		return allowed;
+	}
+
+	void Trippiness()
+	{
+		if(MushroomCounter < AltDirtSprites.Count)
+		{
+			Sprite[] newTiles = new Sprite[RendHandler.Tiles[Dirt].Tile.Length + 1];
+			RendHandler.Tiles[Dirt].Tile.CopyTo(newTiles, 0);
+			newTiles[RendHandler.Tiles[Dirt].Tile.Length] = AltDirtSprites[MushroomCounter];
+		}
 	}
 }
