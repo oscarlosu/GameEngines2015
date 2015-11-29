@@ -1,0 +1,386 @@
+fileFormatVersion: 2
+guid: 98cf844e63046b34c9803dd29019a92b
+timeCreated: 1448827687
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: trippyTileSet_0
+    21300002: StoneTile
+    21300004: trippyTileSet_2
+    21300006: DirtTopTile
+    21300008: trippyTileSet_4
+    21300010: trippyTileSet_5
+    21300012: trippyTileSet_6
+    21300014: TreeLeavesTile
+    21300016: trippyTileSet_8
+    21300018: trippyTileSet_9
+    21300020: trippyTileSet_10
+    21300022: DirtTile
+    21300024: trippyTileSet_12
+    21300026: TreeTrunkTile
+    21300028: trippyTileSet_14
+    21300030: trippyTileSet_15
+    21300032: trippyTileSet_16
+    21300034: trippyTileSet_17
+    21300036: GoldTile
+    21300038: MushroomOneTile
+    21300040: MushroomTwoTile
+    21300042: BushOneTile
+    21300044: BushTwoTile
+    21300046: BambooTile
+    21300048: trippyTileSet_24
+    21300050: trippyTileSet_25
+    21300052: StoneTwoTile
+    21300054: StoneTwoMossyTile
+    21300056: trippyTileSet_28
+    21300058: trippyTileSet_29
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 8
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 1
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: trippyTileSet_0
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 202
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: StoneTile
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 202
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_2
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 202
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: DirtTopTile
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 202
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_4
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 202
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_5
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 202
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_6
+      rect:
+        serializedVersion: 2
+        x: 394
+        y: 202
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeLeavesTile
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 202
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_8
+      rect:
+        serializedVersion: 2
+        x: 522
+        y: 202
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_9
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 138
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_10
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 138
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: DirtTile
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 138
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_12
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 138
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: TreeTrunkTile
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 138
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_14
+      rect:
+        serializedVersion: 2
+        x: 394
+        y: 138
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_15
+      rect:
+        serializedVersion: 2
+        x: 522
+        y: 138
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_16
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 74
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_17
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 74
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: GoldTile
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 74
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: MushroomOneTile
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 74
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: MushroomTwoTile
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 74
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: BushOneTile
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 74
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: BushTwoTile
+      rect:
+        serializedVersion: 2
+        x: 394
+        y: 74
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: BambooTile
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 74
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_24
+      rect:
+        serializedVersion: 2
+        x: 522
+        y: 74
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_25
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 10
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: StoneTwoTile
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 10
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: StoneTwoMossyTile
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 10
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_28
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 10
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: trippyTileSet_29
+      rect:
+        serializedVersion: 2
+        x: 394
+        y: 10
+        width: 64
+        height: 64
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
