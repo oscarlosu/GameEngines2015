@@ -14,7 +14,7 @@ public class RectangleGrid : MonoBehaviour
     public int CellWidth, CellDepth, CellHeight;
     public RenderingHandler RendHandler;
     public List<short[,]> grid = new List<short[,]>();
-    private Dictionary<Vector3, GameObject> gameObjects = new Dictionary<Vector3, GameObject>();
+    private Dictionary<GridPosition, GameObject> gameObjects = new Dictionary<GridPosition, GameObject>();
     public int LayerCount
     {
         get
@@ -69,7 +69,7 @@ public class RectangleGrid : MonoBehaviour
 
     public bool TryGetObject(int x, int y, int layer, out GameObject obj)
     {
-        return gameObjects.TryGetValue(new Vector3(x, y, layer), out obj);
+        return gameObjects.TryGetValue(new GridPosition(x, y, layer), out obj);
     }
 
     public bool IsCellFree(int x, int y, int layer)
@@ -83,7 +83,7 @@ public class RectangleGrid : MonoBehaviour
         // Clear the dest cell
         Remove(x, y, layer);
         // Add to go dictionary
-        gameObjects.Add(new Vector3(x, y, layer), obj);
+        gameObjects.Add(new GridPosition(x, y, layer), obj);
         // Set world position and z-depth
         obj.transform.position = new Vector3(x * CellWidth, y * CellDepth + layer * CellHeight, 0);
         SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
@@ -105,7 +105,7 @@ public class RectangleGrid : MonoBehaviour
 
     public void Move(int sourceX, int sourceY, int sourceLayer, int destX, int destY, int destLayer)
     {
-        Vector3 sourcePos = new Vector3(sourceX, sourceY, sourceLayer);
+        GridPosition sourcePos = new GridPosition(sourceX, sourceY, sourceLayer);
         GameObject obj;
         if (gameObjects.TryGetValue(sourcePos, out obj))
         {
@@ -123,7 +123,7 @@ public class RectangleGrid : MonoBehaviour
 
     public void Remove(int x, int y, int layer)
     {
-        Vector3 pos = new Vector3(x, y, layer);
+        GridPosition pos = new GridPosition(x, y, layer);
         GameObject obj;
         if (gameObjects.TryGetValue(pos, out obj))
         {
@@ -143,7 +143,7 @@ public class RectangleGrid : MonoBehaviour
     public void Swap(int x1, int y1, int layer1, int x2, int y2, int layer2)
     {
         // Copy and clear x2, y2, layer2
-        Vector3 pos2 = new Vector3(x2, y2, layer2);
+        GridPosition pos2 = new GridPosition(x2, y2, layer2);
         GameObject obj = null;
         short tile;
         if (gameObjects.TryGetValue(pos2, out obj))
@@ -364,17 +364,17 @@ public class RectangleGrid : MonoBehaviour
 
 
             // Swap game objects
-            Dictionary<Vector3, GameObject> layer1Dict = new Dictionary<Vector3, GameObject>();
+            Dictionary<GridPosition, GameObject> layer1Dict = new Dictionary<GridPosition, GameObject>();
             for (int x = 0; x < grid[layerIndex1].GetLength(0); ++x)
             {
                 for (int y = 0; y < grid[layerIndex1].GetLength(1); ++y)
                 {
-                    Vector3 pos = new Vector3(x, y, layerIndex1);
+                    GridPosition pos = new GridPosition(x, y, layerIndex1);
                     GameObject obj = null;
                     if (gameObjects.TryGetValue(pos, out obj))
                     {
                         // Add reference in temporary dictionary with updated layer
-                        layer1Dict.Add(new Vector3(x, y, layerIndex2), obj);
+                        layer1Dict.Add(new GridPosition(x, y, layerIndex2), obj);
                         // Remove reference from game objects dictionary
                         gameObjects.Remove(pos);
                         // Update transform and z depth
@@ -387,17 +387,17 @@ public class RectangleGrid : MonoBehaviour
                     }
                 }
             }
-            Dictionary<Vector3, GameObject> layer2Dict = new Dictionary<Vector3, GameObject>();
+            Dictionary<GridPosition, GameObject> layer2Dict = new Dictionary<GridPosition, GameObject>();
             for (int x = 0; x < grid[layerIndex2].GetLength(0); ++x)
             {
                 for (int y = 0; y < grid[layerIndex2].GetLength(1); ++y)
                 {
-                    Vector3 pos = new Vector3(x, y, layerIndex2);
+                    GridPosition pos = new GridPosition(x, y, layerIndex2);
                     GameObject obj = null;
                     if (gameObjects.TryGetValue(pos, out obj))
                     {
                         // Add reference in temporary dictionary with updated layer
-                        layer2Dict.Add(new Vector3(x, y, layerIndex1), obj);
+                        layer2Dict.Add(new GridPosition(x, y, layerIndex1), obj);
                         // Remove reference from game objects dictionary
                         gameObjects.Remove(pos);
                         // Update transform

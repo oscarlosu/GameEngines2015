@@ -33,7 +33,7 @@ public class RenderingHandler : MonoBehaviour
 	public Camera cam;
 
     private int animationIteration;
-    private Dictionary<Vector3, SpriteRenderer> animatedTiles = new Dictionary<Vector3, SpriteRenderer>();
+    private Dictionary<GridPosition, SpriteRenderer> animatedTiles = new Dictionary<GridPosition, SpriteRenderer>();
 
     // Use this for initialization
     void Awake()
@@ -56,10 +56,10 @@ public class RenderingHandler : MonoBehaviour
     {
         // Animation iteration.
         animationIteration++;
-        foreach (KeyValuePair<Vector3, SpriteRenderer> entry in animatedTiles)
+        foreach (KeyValuePair<GridPosition, SpriteRenderer> entry in animatedTiles)
         {
             short tile;
-            if (HandledGrid.TryGetTile((int)entry.Key.x, (int)entry.Key.y, (int)entry.Key.z, out tile))
+            if (HandledGrid.TryGetTile((int)entry.Key.X, (int)entry.Key.Y, (int)entry.Key.Layer, out tile))
             {
                 entry.Value.sprite = Tiles[tile][animationIteration % Tiles[tile].Length];
             }
@@ -275,9 +275,9 @@ public class RenderingHandler : MonoBehaviour
                     // Tint
                     /*float tintVal = Mathf.Lerp (1 - MaxTint, 1, layer / (float)HandledGrid.LayerCount);*/ // Old layer-based lighting system.
                     rend.color = GetTintColour(x, y, layer);
-                    if (Tiles[tile].Length > 1 && !animatedTiles.ContainsKey(new Vector3(x, y, layer)))
+                    if (Tiles[tile].Length > 1 && !animatedTiles.ContainsKey(new GridPosition(x, y, layer)))
                     {
-                        animatedTiles.Add(new Vector3(x, y, layer), rend);
+                        animatedTiles.Add(new GridPosition(x, y, layer), rend);
                     }
                 }
                 // Update adjacent cells that might now be hidden
@@ -299,7 +299,7 @@ public class RenderingHandler : MonoBehaviour
 
     public void UnloadCell(int x, int y, int layer)
     {
-        animatedTiles.Remove(new Vector3(x, y, layer));
+        animatedTiles.Remove(new GridPosition(x, y, layer));
 		if (GameObjectPoolHandler.Instance.DisablePoolObject(new Vector3(x, y, layer)))
         {
             // Update adjacent cells that might now be visible
