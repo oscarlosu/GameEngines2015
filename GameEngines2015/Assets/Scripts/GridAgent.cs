@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class GridAgent : MonoBehaviour
 {
 	public RectangleGrid Grid;
-	public Vector3 CellCoords;
+	public GridPosition CellCoords;
 	public List<int> NotWalkableTileIndexes = new List<int>();
 
 	private SpriteRenderer rend;
@@ -33,9 +33,9 @@ public class GridAgent : MonoBehaviour
 	// Use this for initialization
 	protected void Start ()
 	{
-		transform.position = new Vector3(CellCoords.x * Grid.CellWidth, CellCoords.y * Grid.CellDepth + CellCoords.z * Grid.CellHeight, 0);
+		transform.position = new Vector3(CellCoords.X * Grid.CellWidth, CellCoords.Y * Grid.CellDepth + CellCoords.Layer * Grid.CellHeight, 0);
 		rend = GetComponent<SpriteRenderer>();
-		rend.sortingOrder = (int)CellCoords.z - (int)CellCoords.y;
+		rend.sortingOrder = CellCoords.Layer - CellCoords.Y;
 	}
 	
 	// Update is called once per frame
@@ -96,9 +96,9 @@ public class GridAgent : MonoBehaviour
 		if(CanMove(xInc, yInc, layerInc, out outX, out outY, out outLayer))
 		{
 			// Move to cell
-			CellCoords += new Vector3(outX, outY, outLayer);
+			CellCoords += new GridPosition(outX, outY, outLayer);
 			transform.position += new Vector3(outX * Grid.CellWidth, outY * Grid.CellDepth + outLayer * Grid.CellHeight, 0);
-			rend.sortingOrder = (int)CellCoords.z - (int)CellCoords.y;
+			rend.sortingOrder = CellCoords.Layer - CellCoords.Y;
 		}
 	}
 
@@ -110,7 +110,7 @@ public class GridAgent : MonoBehaviour
 		outY = y;
 		outLayer = layer;
 		// Inside the world
-		if(Grid.IsInsideGrid((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer))
+		if(Grid.IsInsideGrid(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer))
 		{
 			return true;
 		}
@@ -122,13 +122,13 @@ public class GridAgent : MonoBehaviour
 		outY = y;
 		outLayer = layer;
 		// Inside the world
-		if(Grid.IsInsideGrid((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer))
+		if(Grid.IsInsideGrid(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer))
 		{
 			// Only to an empty cell
 			short tile;
 			GameObject obj;
-			if(!Grid.TryGetTile((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer, out tile) &&
-			   !Grid.TryGetObject((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer, out obj))
+			if(!Grid.TryGetTile(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer, out tile) &&
+			   !Grid.TryGetObject(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer, out obj))
 			{
 				return true;
 			}
@@ -141,19 +141,19 @@ public class GridAgent : MonoBehaviour
 		outY = y;
 		outLayer = layer;
 		// Inside the world
-		if(Grid.IsInsideGrid((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer))
+		if(Grid.IsInsideGrid(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer))
 		{
 			// Only to an empty cell
 			short tile;
 			GameObject obj;
-			if(!Grid.TryGetTile((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer, out tile) &&
-			   !Grid.TryGetObject((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer, out obj))
+			if(!Grid.TryGetTile(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer, out tile) &&
+			   !Grid.TryGetObject(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer, out obj))
 			{
 				// Only over walkable tiles and never over game objects
-				if(Grid.IsInsideGrid((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer - 1) &&
-				   Grid.TryGetTile((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer - 1, out tile) && 
+				if(Grid.IsInsideGrid(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer - 1) &&
+				   Grid.TryGetTile(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer - 1, out tile) && 
 				   !NotWalkableTileIndexes.Contains(tile) &&
-				   !Grid.TryGetObject((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer - 1, out obj))
+				   !Grid.TryGetObject(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer - 1, out obj))
 				{
 					return true;
 				}
@@ -168,31 +168,31 @@ public class GridAgent : MonoBehaviour
 		outY = y;
 		outLayer = layer;
 		// Inside the world
-		if(Grid.IsInsideGrid((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer))
+		if(Grid.IsInsideGrid(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer))
 		{
 			// To an empty cell
 			bool empty = false;
 			short tile;
 			GameObject obj;
-			if(!Grid.TryGetTile((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer, out tile) &&
-			   !Grid.TryGetObject((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer, out obj))
+			if(!Grid.TryGetTile(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer, out tile) &&
+			   !Grid.TryGetObject(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer, out obj))
 			{
 				empty = true;
 				// Climb down from cell
-				if(!Grid.TryGetTile((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer - 1, out tile) && 
-				   !Grid.TryGetObject((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer - 1, out obj) &&
-				   !Grid.TryGetTile((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer, out tile) && 
-				   !Grid.TryGetObject((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer, out obj))
+				if(!Grid.TryGetTile(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer - 1, out tile) && 
+				   !Grid.TryGetObject(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer - 1, out obj) &&
+				   !Grid.TryGetTile(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer, out tile) && 
+				   !Grid.TryGetObject(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer, out obj))
 				{
 					// Change destination cell to move on top of original destination
 					--outLayer;
 				}
 			}
 			// Climb on top of cell
-			else if(!Grid.TryGetTile((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer + 1, out tile) && 
-			   !Grid.TryGetObject((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + layer + 1, out obj) &&
-			   !Grid.TryGetTile((int)CellCoords.x, (int)CellCoords.y, (int)CellCoords.z + layer + 1, out tile) && 
-			   !Grid.TryGetObject((int)CellCoords.x, (int)CellCoords.y, (int)CellCoords.z + layer + 1, out obj))
+			else if(!Grid.TryGetTile(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer + 1, out tile) && 
+			   !Grid.TryGetObject(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + layer + 1, out obj) &&
+			   !Grid.TryGetTile(CellCoords.X, CellCoords.Y, CellCoords.Layer + layer + 1, out tile) && 
+			   !Grid.TryGetObject(CellCoords.X, CellCoords.Y, CellCoords.Layer + layer + 1, out obj))
 			{
 				empty = true;
 				// Change destination cell to move on top of original destination
@@ -202,10 +202,10 @@ public class GridAgent : MonoBehaviour
 
 			// Only over walkable tiles and never over game objects
 			if(empty && 
-			   Grid.IsInsideGrid((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + outLayer - 1) &&
-			   Grid.TryGetTile((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + outLayer - 1, out tile) && 
+			   Grid.IsInsideGrid(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + outLayer - 1) &&
+			   Grid.TryGetTile(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + outLayer - 1, out tile) && 
 			   !NotWalkableTileIndexes.Contains(tile) &&
-			   !Grid.TryGetObject((int)CellCoords.x + x, (int)CellCoords.y + y, (int)CellCoords.z + outLayer - 1, out obj))
+			   !Grid.TryGetObject(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer + outLayer - 1, out obj))
 			{
 				return true;
 			}
