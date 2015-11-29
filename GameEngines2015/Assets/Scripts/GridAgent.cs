@@ -202,7 +202,7 @@ public class GridAgent : MonoBehaviour
 	/// Specifically, this method:
 	/// 	- Prevents the agent from going outside the boundaries of the grid.
 	/// 	- Only allows the agent to move to empty cells.
-	/// 	- Only allows the agent to move to cells that have a tile below them (not a game object).
+	/// 	- Only allows the agent to move to cells that have a tile below them and aren't in the NonWalkableTiles list (not a game object).
 	/// Sets outX, outY and outLayer, which will be used in the <see cref="Move"/> method to move the agent.
 	/// </summary>
 	/// <returns><c>true</c> if this instance can ghost move by the specified x, y, layer; otherwise, <c>false</c>.</returns>
@@ -243,7 +243,7 @@ public class GridAgent : MonoBehaviour
 	/// Specifically, this method:
 	/// 	- Prevents the agent from going outside the boundaries of the grid.
 	/// 	- Only allows the agent to move to empty cells.
-	/// 	- Only allows the agent to move to cells that have a tile below them (not a game object).
+	/// 	- Only allows the agent to move to cells that have a tile below them and aren't in the NonWalkableTiles list (not a game object).
 	/// 	- Allows the agent to move one layer down or up while moving horizontally as long as it doesnt move through
 	/// 	  non-empty cells (climbing up and down tiles).
 	/// Sets outX, outY and outLayer, which will be used in the <see cref="Move"/> method to move the agent.
