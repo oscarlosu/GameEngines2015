@@ -299,13 +299,8 @@ public class RenderingHandler : MonoBehaviour
 
     public void UnloadCell(int x, int y, int layer)
     {
-<<<<<<< HEAD
         animatedTiles.Remove(new GridPosition(x, y, layer));
-        if (RendererPool.DisablePoolObject(new Vector3(x, y, layer)))
-=======
-        animatedTiles.Remove(new Vector3(x, y, layer));
 		if (GameObjectPoolHandler.Instance.DisablePoolObject(new Vector3(x, y, layer)))
->>>>>>> 17415c43f90cacf0efd1297949574f1569d33e21
         {
             // Update adjacent cells that might now be visible
             // Cell below
