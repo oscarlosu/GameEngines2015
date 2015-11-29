@@ -10,7 +10,7 @@ public class RenderingHandler : MonoBehaviour
     /// The handled grid.
     /// </summary>
     public RectangleGrid HandledGrid;
-    public GameObjectPoolHandler RendererPool;
+    //public GameObjectPoolHandler RendererPool;
     public List<SpriteList> Tiles = new List<SpriteList>();
     public List<int> NonViewObstructingTiles = new List<int>();
 
@@ -263,7 +263,7 @@ public class RenderingHandler : MonoBehaviour
         {
             if (IsCellVisible(x, y, layer))
             {
-                GameObject obj = RendererPool.GetPoolObject(new Vector3(x, y, layer));
+				GameObject obj = GameObjectPoolHandler.Instance.GetPoolObject(new Vector3(x, y, layer));
                 // Move renderer to corrent position
                 obj.transform.position = new Vector3(x * HandledGrid.CellWidth, y * HandledGrid.CellDepth + layer * HandledGrid.CellHeight, 0);
                 // Update the sprite and the z-depth
@@ -284,12 +284,12 @@ public class RenderingHandler : MonoBehaviour
                 // Cell below
                 if (!IsCellVisible(x, y, layer - 1))
                 {
-                    RendererPool.DisablePoolObject(new Vector3(x, y, layer - 1));
+					GameObjectPoolHandler.Instance.DisablePoolObject(new Vector3(x, y, layer - 1));
                 }
                 // Cell behind
                 if (!IsCellVisible(x, y + 1, layer))
                 {
-                    RendererPool.DisablePoolObject(new Vector3(x, y + 1, layer));
+					GameObjectPoolHandler.Instance.DisablePoolObject(new Vector3(x, y + 1, layer));
                 }
                 return true;
             }
@@ -299,8 +299,13 @@ public class RenderingHandler : MonoBehaviour
 
     public void UnloadCell(int x, int y, int layer)
     {
+<<<<<<< HEAD
         animatedTiles.Remove(new GridPosition(x, y, layer));
         if (RendererPool.DisablePoolObject(new Vector3(x, y, layer)))
+=======
+        animatedTiles.Remove(new Vector3(x, y, layer));
+		if (GameObjectPoolHandler.Instance.DisablePoolObject(new Vector3(x, y, layer)))
+>>>>>>> 17415c43f90cacf0efd1297949574f1569d33e21
         {
             // Update adjacent cells that might now be visible
             // Cell below

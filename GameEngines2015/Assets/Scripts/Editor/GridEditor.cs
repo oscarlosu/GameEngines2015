@@ -10,7 +10,6 @@ public class GridEditor : MonoBehaviour
         GameObject go = new GameObject("RectangleGrid");
         var grid = go.AddComponent<RectangleGrid>();
         var rendHandler = go.AddComponent<RenderingHandler>();
-        var objectPool = go.AddComponent<GameObjectPoolHandler>();
 
         /////////////////////////////////////////////
         // Set up grid with necessities and defaults.
@@ -21,7 +20,7 @@ public class GridEditor : MonoBehaviour
         // Set up rendHandler with necessities and defaults.
         ////////////////////////////////////////////////////
         rendHandler.HandledGrid = grid;
-        rendHandler.RendererPool = objectPool;
+        //rendHandler.RendererPool = objectPool;
 
         // Buffers.
         rendHandler.BufferX = 2;
@@ -38,16 +37,6 @@ public class GridEditor : MonoBehaviour
 
         // Animations.
         rendHandler.AnimationNextTime = 0.5f;
-
-        ///////////////////////////////////////////////////
-        // Set up objectPool with necessities and defaults.
-        ///////////////////////////////////////////////////
-        objectPool.PoolObjectPrefab = (GameObject)Resources.Load("Renderer");
-        objectPool.DefaultSize = 20;
-        objectPool.SizePredictionFrequency = 5;
-        objectPool.SizeSamplingFrequency = 1;
-        objectPool.HardSizeLimit = 3000;
-
     }
 
 }

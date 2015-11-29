@@ -47,15 +47,11 @@ public abstract class GenericGameObjectPoolHandler<KeyType> : MonoBehaviour
 	/// method uses this information to adjust the size of the pool dinamically.
 	/// </summary>
 	protected List<int> poolSizeHistory;
-
-	void Awake()
-	{
-		Initialize ();
-	}
+	
 	/// <summary>
 	/// Initialize the pool with <paramref name="DefaultSize"/> <paramref name="PoolObjectPrefab"/> in the inactive pool.
 	/// </summary>
-	public void Initialize()
+	protected void Initialize()
 	{
 		ClearPool();
 		inactivePool = new Queue<GameObject>();
