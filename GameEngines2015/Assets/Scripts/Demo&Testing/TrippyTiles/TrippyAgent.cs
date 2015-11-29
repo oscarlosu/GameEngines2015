@@ -23,10 +23,14 @@ public class TrippyAgent : GridAgent
 
 	public UnityEngine.UI.Text CollectedGoldGUI;
 
+	public Sprite FacingRight;
+	public Sprite FacingLeft;
+
 	public int GoldCounter;
 	public int MushroomCounter;
 
 	private AudioSource audioPlayer;
+	private SpriteRenderer rend;
 
 	// Use this for initialization
 	new void Start ()
@@ -51,10 +55,12 @@ public class TrippyAgent : GridAgent
 		else if(Input.GetKeyDown(KeyCode.LeftArrow))
 		{
 			hDir = HorizontalDirection.West;
+			rend.sprite = FacingLeft;
 		}
 		else if(Input.GetKeyDown(KeyCode.RightArrow))
 		{
 			hDir = HorizontalDirection.East;
+			rend.sprite = FacingRight;
 		}
 		Move (hDir, vDir, Action);
 	}
@@ -71,7 +77,8 @@ public class TrippyAgent : GridAgent
 			return false;
 		}
 		// Cant move to cells occupied by non-walkable tiles
-		if(Grid.TryGetTile(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer, out tile))
+		Grid.TryGetTile(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer, out tile);
+		if(NotWalkableTileIndexes.Contains (tile))
 		{
 			return false;
 		}
@@ -110,7 +117,12 @@ public class TrippyAgent : GridAgent
 			audioPlayer.Play();
 			return true;
 		}
-
+		// Can move into empty tiles if over background ground or sky
+		Grid.TryGetTile(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer - 2, out tile);
+		if(tile == GroundBackground || tile == SkyBackground)
+		{
+			return true;
+		}
 		return false;
 	}
 }

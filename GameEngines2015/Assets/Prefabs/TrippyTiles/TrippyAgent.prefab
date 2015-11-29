@@ -115,7 +115,7 @@ MonoBehaviour:
   CellCoords:
     X: 0
     Y: 0
-    Layer: 0
+    Layer: 2
   NotWalkableTileIndexes: 04000000
   MaxYIndex: 100
   SkyBackground: 0
@@ -132,6 +132,8 @@ MonoBehaviour:
   GoldSoundFX: {fileID: 8300000, guid: b58fd6448710ba5469b26c0057e2b2ca, type: 3}
   MushroomSoundFX: {fileID: 8300000, guid: 5608ea258952db845a89cf394f6ea051, type: 3}
   CollectedGoldGUI: {fileID: 0}
+  FacingRight: {fileID: 0}
+  FacingLeft: {fileID: 0}
   GoldCounter: 0
   MushroomCounter: 0
 --- !u!212 &21204798
