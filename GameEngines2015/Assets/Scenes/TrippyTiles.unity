@@ -155,8 +155,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85a93aa0be6c7b84294acbbd5491f8cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CellWidth: 32
-  CellDepth: 32
+  CellWidth: 64
+  CellDepth: 64
   CellHeight: 0
   RendHandler: {fileID: 476286094}
 --- !u!4 &476286093
@@ -293,7 +293,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 188
+  orthographic size: 360
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -314,7 +314,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 589726515}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 335, y: 190, z: -10}
+  m_LocalPosition: {x: 640, y: 360, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -536,6 +536,58 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 589726519}
+    - target: {fileID: 22432788, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
+      propertyPath: m_AnchoredPosition.x
+      value: 102.099998
+      objectReference: {fileID: 0}
+    - target: {fileID: 22432788, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22432788, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 22432788, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 22432788, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 22432788, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -33.7999992
+      objectReference: {fileID: 0}
+    - target: {fileID: 11474884, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
+      propertyPath: m_FontData.m_FontStyle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11474884, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
+      propertyPath: m_FontData.m_FontSize
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 22432788, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
+      propertyPath: m_SizeDelta.x
+      value: 194.199997
+      objectReference: {fileID: 0}
+    - target: {fileID: 22432788, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
+      propertyPath: m_SizeDelta.y
+      value: 57.5999985
+      objectReference: {fileID: 0}
+    - target: {fileID: 11474884, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11474884, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
+      propertyPath: m_Color.g
+      value: .931034446
+      objectReference: {fileID: 0}
+    - target: {fileID: 11474884, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
   m_IsPrefabParent: 0
