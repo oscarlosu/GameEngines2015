@@ -1,5 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
 
 public class RenderingHandler : MonoBehaviour
 {
@@ -8,7 +11,7 @@ public class RenderingHandler : MonoBehaviour
     /// </summary>
     public RectangleGrid HandledGrid;
     public GameObjectPoolHandler RendererPool;
-    public List<Sprite> Tiles = new List<Sprite>();
+    public List<SpriteList> Tiles = new List<SpriteList>();
     public List<int> NonViewObstructingTiles = new List<int>();
 
     public bool RenderHidden;
@@ -19,6 +22,9 @@ public class RenderingHandler : MonoBehaviour
     public float MaxTint;
     public float TintIncrease;
 
+    public int lowestHiddenLayer;
+    public float AnimationNextTime;
+
     private Dictionary<int, Vector2> firstCell = new Dictionary<int, Vector2>();
     private int sizeX, sizeY;
 
@@ -26,7 +32,8 @@ public class RenderingHandler : MonoBehaviour
     private float lastCameraX, lastCameraY;
 	public Camera cam;
 
-	public int lowestHiddenLayer;
+    private int animationIteration;
+    private Dictionary<Vector3, SpriteRenderer> animatedTiles = new Dictionary<Vector3, SpriteRenderer>();
 
     // Use this for initialization
     void Awake()
@@ -42,6 +49,21 @@ public class RenderingHandler : MonoBehaviour
 		lastCameraY = camPos.y;
 		// No layer is hidden by default (zero index)
 		lowestHiddenLayer = HandledGrid.LayerCount;
+        InvokeRepeating("RunAnimations", 0, AnimationNextTime);
+    }
+
+    private void RunAnimations()
+    {
+        // Animation iteration.
+        animationIteration++;
+        foreach (KeyValuePair<Vector3, SpriteRenderer> entry in animatedTiles)
+        {
+            short tile;
+            if (HandledGrid.TryGetTile((int)entry.Key.x, (int)entry.Key.y, (int)entry.Key.z, out tile))
+            {
+                entry.Value.sprite = Tiles[tile][animationIteration % Tiles[tile].Length];
+            }
+        }
     }
 
     // Update is called once per frame
@@ -80,77 +102,77 @@ public class RenderingHandler : MonoBehaviour
         {
             Vector2 oldFirstCell = UpdateFirstCellXYInLayer(layer);
 
-			// Unload
-			for(int y = (int)oldFirstCell.y; y < oldFirstCell.y + sizeY; ++y)
-			{
-				// We want to skip any updates outside the grid
-				if(y < 0 || y >= HandledGrid.SizeY)
-				{
-					continue;
-				}
-				for(int x = (int)oldFirstCell.x; x < oldFirstCell.x + sizeX; ++x)
-				{
-					++countUnload;
-					// Unload all the cells inside hidden layers
-					if(layer >= lowestHiddenLayer)
-					{
-						UnloadCell(x, y, layer);
-						continue;
-					}
-					// If current cell is inside the new viewport, skip to the other side of the camera
-					if(y >= firstCell[layer].y && y < firstCell[layer].y + sizeY && 
-					   x >= firstCell[layer].x && x < firstCell[layer].x + sizeX)
-					{
-						x += sizeX - (int)Mathf.Abs(firstCell[layer].x - oldFirstCell.x);
-					}
-					if(x < oldFirstCell.x + sizeX)
-					{
-						UnloadCell(x, y, layer);
-					}
-				}
-			}
-			// Load
-			for(int y = (int)firstCell[layer].y; y < firstCell[layer].y + sizeY; ++y)
-			{
-				// Skip all the layers that are hidden
-				if(layer >= lowestHiddenLayer)
-				{
-					continue;
-				}
-				// We want to skip any updates outside the grid
-				if(y < 0 || y >= HandledGrid.SizeY)
-				{
-					continue;
-				}
-				for(int x = (int)firstCell[layer].x; x < firstCell[layer].x + sizeX; ++x)
-				{
-					// If current cell is inside the old viewport, skip to the other side of the old camera
-					if(y >= (int)oldFirstCell.y && y < (int)oldFirstCell.y + sizeY && 
-					   x >= (int)oldFirstCell.x && x < (int)oldFirstCell.x + sizeX)
-					{
-						x += sizeX - (int)Mathf.Abs(firstCell[layer].x - oldFirstCell.x);
-					}
-					if(x < firstCell[layer].x + sizeX)
-					{
-						LoadCell(x, y, layer);
-					}
-					++countLoad;
-				}
-			}
-		}
-		Debug.Log ("MoveUnload iterations count: " + countUnload);
-		Debug.Log ("MoveLoad iterations count: " + countLoad);
-	}
+            // Unload
+            for (int y = (int)oldFirstCell.y; y < oldFirstCell.y + sizeY; ++y)
+            {
+                // We want to skip any updates outside the grid
+                if (y < 0 || y >= HandledGrid.SizeY)
+                {
+                    continue;
+                }
+                for (int x = (int)oldFirstCell.x; x < oldFirstCell.x + sizeX; ++x)
+                {
+                    ++countUnload;
+                    // Unload all the cells inside hidden layers
+                    if (layer >= lowestHiddenLayer)
+                    {
+                        UnloadCell(x, y, layer);
+                        continue;
+                    }
+                    // If current cell is inside the new viewport, skip to the other side of the camera
+                    if (y >= firstCell[layer].y && y < firstCell[layer].y + sizeY &&
+                       x >= firstCell[layer].x && x < firstCell[layer].x + sizeX)
+                    {
+                        x += sizeX - (int)Mathf.Abs(firstCell[layer].x - oldFirstCell.x);
+                    }
+                    if (x < oldFirstCell.x + sizeX)
+                    {
+                        UnloadCell(x, y, layer);
+                    }
+                }
+            }
+            // Load
+            for (int y = (int)firstCell[layer].y; y < firstCell[layer].y + sizeY; ++y)
+            {
+                // Skip all the layers that are hidden
+                if (layer >= lowestHiddenLayer)
+                {
+                    continue;
+                }
+                // We want to skip any updates outside the grid
+                if (y < 0 || y >= HandledGrid.SizeY)
+                {
+                    continue;
+                }
+                for (int x = (int)firstCell[layer].x; x < firstCell[layer].x + sizeX; ++x)
+                {
+                    // If current cell is inside the old viewport, skip to the other side of the old camera
+                    if (y >= (int)oldFirstCell.y && y < (int)oldFirstCell.y + sizeY &&
+                       x >= (int)oldFirstCell.x && x < (int)oldFirstCell.x + sizeX)
+                    {
+                        x += sizeX - (int)Mathf.Abs(firstCell[layer].x - oldFirstCell.x);
+                    }
+                    if (x < firstCell[layer].x + sizeX)
+                    {
+                        LoadCell(x, y, layer);
+                    }
+                    ++countLoad;
+                }
+            }
+        }
+        Debug.Log("MoveUnload iterations count: " + countUnload);
+        Debug.Log("MoveLoad iterations count: " + countLoad);
+    }
 
-	public void ZoomUpdate()
-	{
-		int oldSizeX = sizeX;
-		int oldSizeY = sizeY;
-		ZoomUnload ();
-		sizeX = oldSizeX;
-		sizeY = oldSizeY;
-		ZoomLoad();
-	}
+    public void ZoomUpdate()
+    {
+        int oldSizeX = sizeX;
+        int oldSizeY = sizeY;
+        ZoomUnload();
+        sizeX = oldSizeX;
+        sizeY = oldSizeY;
+        ZoomLoad();
+    }
 
     private void ZoomLoad()
     {
@@ -248,11 +270,15 @@ public class RenderingHandler : MonoBehaviour
                 SpriteRenderer rend = obj.GetComponent<SpriteRenderer>();
                 if (rend != null)
                 {
-                    rend.sprite = Tiles[tile];
+                    rend.sprite = Tiles[tile][animationIteration % Tiles[tile].Length];
                     rend.sortingOrder = layer - y;
                     // Tint
                     /*float tintVal = Mathf.Lerp (1 - MaxTint, 1, layer / (float)HandledGrid.LayerCount);*/ // Old layer-based lighting system.
                     rend.color = GetTintColour(x, y, layer);
+                    if (Tiles[tile].Length > 1 && !animatedTiles.ContainsKey(new Vector3(x, y, layer)))
+                    {
+                        animatedTiles.Add(new Vector3(x, y, layer), rend);
+                    }
                 }
                 // Update adjacent cells that might now be hidden
                 // Cell below
@@ -273,7 +299,7 @@ public class RenderingHandler : MonoBehaviour
 
     public void UnloadCell(int x, int y, int layer)
     {
-
+        animatedTiles.Remove(new Vector3(x, y, layer));
         if (RendererPool.DisablePoolObject(new Vector3(x, y, layer)))
         {
             // Update adjacent cells that might now be visible
@@ -370,7 +396,7 @@ public class RenderingHandler : MonoBehaviour
         sizeX = Mathf.CeilToInt(2 * camHalfWidth / HandledGrid.CellWidth) + 2 * BufferX;
         sizeY = Mathf.CeilToInt(2 * cam.orthographicSize / HandledGrid.CellDepth) + 2 * BufferY;
     }
-
+	
 	private bool IsCellVisible(int x, int y, int layer)
 	{
 		// If the requested layer is not part of the grid, return false
@@ -412,5 +438,22 @@ public class RenderingHandler : MonoBehaviour
     public enum TimeOfDay
     {
         Midday, Morning, Night
+    }
+}
+
+[Serializable]
+public class SpriteList
+{
+    public Sprite[] Tile;
+
+    public Sprite this[int i]
+    {
+        get { return Tile[i]; }
+        set { Tile[i] = value; }
+    }
+
+    public int Length
+    {
+        get { return Tile.Length; }
     }
 }
