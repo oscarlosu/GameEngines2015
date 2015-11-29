@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.IO;
 
 public class TrippyTiles : MonoBehaviour
 {
@@ -49,6 +50,13 @@ public class TrippyTiles : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+		if(Input.GetKeyDown (KeyCode.S))
+		{
+			Grid.SaveGridToFileCoroutine(Directory.GetCurrentDirectory() + @"\..\TrippyTilesDemo.txt");
+		}
+		if(Input.GetKeyDown (KeyCode.L))
+		{
+			Grid.LoadGridFromFile(Directory.GetCurrentDirectory() + @"\..\TrippyTilesDemo.txt");
+		}
     }
 }
