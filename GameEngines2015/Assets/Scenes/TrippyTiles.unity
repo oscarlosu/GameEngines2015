@@ -95,7 +95,7 @@ GameObject:
   - 4: {fileID: 454472806}
   - 114: {fileID: 454472805}
   m_Layer: 0
-  m_Name: DemoGreenCity
+  m_Name: TrippyTilesDemo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -109,11 +109,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 454472804}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ad286d864c3e4849badae2edad633aa, type: 3}
+  m_Script: {fileID: 11500000, guid: 613fbc3bfe7b6984987f2a81c79e7c96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Grid: {fileID: 476286092}
-  Renderer: {fileID: 476286094}
+  RendHandler: {fileID: 476286094}
 --- !u!4 &454472806
 Transform:
   m_ObjectHideFlags: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CellWidth: 32
   CellDepth: 32
-  CellHeight: 16
+  CellHeight: 0
   RendHandler: {fileID: 476286094}
 --- !u!4 &476286093
 Transform:
@@ -185,53 +185,34 @@ MonoBehaviour:
   HandledGrid: {fileID: 476286092}
   Tiles:
   - Tile:
-    - {fileID: 21300000, guid: 39bf8d05e3a7d56419a763524fcc7736, type: 3}
+    - {fileID: 21300062, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
   - Tile:
-    - {fileID: 21300000, guid: bdf06fb1581cc3949b5776d6874c4ade, type: 3}
+    - {fileID: 21300070, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
   - Tile:
-    - {fileID: 21300000, guid: 018c49b67c4a09a419fdc635a42806eb, type: 3}
+    - {fileID: 21300006, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
   - Tile:
-    - {fileID: 21300000, guid: 0a522b3da3dab6649821d2513e239de7, type: 3}
-    - {fileID: 21300002, guid: 0a522b3da3dab6649821d2513e239de7, type: 3}
-    - {fileID: 21300004, guid: 0a522b3da3dab6649821d2513e239de7, type: 3}
-    - {fileID: 21300006, guid: 0a522b3da3dab6649821d2513e239de7, type: 3}
-    - {fileID: 21300008, guid: 0a522b3da3dab6649821d2513e239de7, type: 3}
-    - {fileID: 21300010, guid: 0a522b3da3dab6649821d2513e239de7, type: 3}
-    - {fileID: 21300012, guid: 0a522b3da3dab6649821d2513e239de7, type: 3}
-    - {fileID: 21300014, guid: 0a522b3da3dab6649821d2513e239de7, type: 3}
+    - {fileID: 21300022, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
   - Tile:
-    - {fileID: 21300000, guid: a5b3eaa424e3654449a91af09140e75b, type: 3}
-    - {fileID: 21300002, guid: a5b3eaa424e3654449a91af09140e75b, type: 3}
-    - {fileID: 21300004, guid: a5b3eaa424e3654449a91af09140e75b, type: 3}
-    - {fileID: 21300006, guid: a5b3eaa424e3654449a91af09140e75b, type: 3}
-    - {fileID: 21300008, guid: a5b3eaa424e3654449a91af09140e75b, type: 3}
-    - {fileID: 21300010, guid: a5b3eaa424e3654449a91af09140e75b, type: 3}
-    - {fileID: 21300012, guid: a5b3eaa424e3654449a91af09140e75b, type: 3}
-    - {fileID: 21300014, guid: a5b3eaa424e3654449a91af09140e75b, type: 3}
+    - {fileID: 21300052, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
   - Tile:
-    - {fileID: 21300014, guid: b244ff416b6ea6d449ac5180717aec36, type: 3}
-    - {fileID: 21300012, guid: b244ff416b6ea6d449ac5180717aec36, type: 3}
-    - {fileID: 21300010, guid: b244ff416b6ea6d449ac5180717aec36, type: 3}
-    - {fileID: 21300008, guid: b244ff416b6ea6d449ac5180717aec36, type: 3}
-    - {fileID: 21300006, guid: b244ff416b6ea6d449ac5180717aec36, type: 3}
-    - {fileID: 21300004, guid: b244ff416b6ea6d449ac5180717aec36, type: 3}
-    - {fileID: 21300002, guid: b244ff416b6ea6d449ac5180717aec36, type: 3}
-    - {fileID: 21300000, guid: b244ff416b6ea6d449ac5180717aec36, type: 3}
+    - {fileID: 21300036, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
   - Tile:
-    - {fileID: 21300000, guid: 821fef294e6967b4aa5ec401be295c9d, type: 3}
+    - {fileID: 21300026, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
   - Tile:
-    - {fileID: 21300000, guid: 6700c46b20ce3494cb96c95529de5e89, type: 3}
+    - {fileID: 21300014, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
   - Tile:
-    - {fileID: 21300000, guid: 904672c85b692284c8ffcc2144709b95, type: 3}
+    - {fileID: 21300038, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
+  - Tile:
+    - {fileID: 21300042, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
   NonViewObstructingTiles: 0100000002000000060000000700000008000000
   BufferX: 2
   BufferY: 2
   CurrentLightingMode: 0
-  SelectedTimeOfDay: 2
+  SelectedTimeOfDay: 0
   MiddayColourMultipliers: {x: 1, y: 1, z: 1}
   MorningColourMultipliers: {x: 1, y: .5, z: .5}
   NightColourMultipliers: {x: .400000006, y: .400000006, z: 1}
-  MaxTint: .5
+  MaxTint: 0
   TintIncrease: .0599999987
   AnimationNextTime: .0500000007
   Cam: {fileID: 0}
@@ -312,7 +293,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 500
+  orthographic size: 188
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -333,84 +314,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 589726515}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 80, y: 80, z: -10}
+  m_LocalPosition: {x: 335, y: 190, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!1 &1189112370
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1189112373}
-  - 212: {fileID: 1189112372}
-  - 114: {fileID: 1189112371}
-  m_Layer: 0
-  m_Name: Selection
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1189112371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1189112370}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5639d0438aee5aa4a9e45af9440da38d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Grid: {fileID: 476286092}
-  CellCoords:
-    X: 0
-    Y: 0
-    Layer: 1
-  NotWalkableTileIndexes: ffffffff
-  RiverTileIndexes: 030004000500
---- !u!212 &1189112372
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1189112370}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_Materials:
-  - {fileID: 10754, guid: 0000000000000000e000000000000000, type: 0}
-  m_SubsetIndices: 
-  m_StaticBatchRoot: {fileID: 0}
-  m_UseLightProbes: 0
-  m_ReflectionProbeUsage: 0
-  m_ProbeAnchor: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7482cb25c9123934db0bfdae2d8a48c8, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
---- !u!4 &1189112373
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1189112370}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 80, y: 80, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
 --- !u!1001 &1354487138
 Prefab:
   m_ObjectHideFlags: 0
@@ -534,7 +442,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
 --- !u!114 &1457854948 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 11474884, guid: ca6682aa4f575234b9c8fc234eecf9f5,
@@ -620,6 +528,14 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 22369364, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 22369364, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 589726519}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: ca6682aa4f575234b9c8fc234eecf9f5, type: 2}
   m_IsPrefabParent: 0
