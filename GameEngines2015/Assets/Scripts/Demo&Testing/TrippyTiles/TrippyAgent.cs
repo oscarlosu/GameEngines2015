@@ -17,13 +17,22 @@ public class TrippyAgent : GridAgent
 	public int Mushrooms = 8;
 	public int Bush = 9;
 
+	public AudioClip DiggingSoundFX;
+	public AudioClip GoldSoundFX;
+	public AudioClip MushroomSoundFX;
+
+	public UnityEngine.UI.Text CollectedGoldGUI;
+
 	public int GoldCounter;
 	public int MushroomCounter;
+
+	private AudioSource audioPlayer;
 
 	// Use this for initialization
 	new void Start ()
 	{
 		base.Start ();
+		audioPlayer = GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
@@ -66,12 +75,18 @@ public class TrippyAgent : GridAgent
 		{
 			return false;
 		}
+		// Cant move above the MaxYIndex (sky)
+		if(CellCoords.Y + y > MaxYIndex)
+		{
+			return false;
+		}
 		// Can remove grass and dirt
 		if(tile == Grass || tile == Dirt)
 		{
 			Grid.Remove(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer);
 			// Play digging sound
-
+			audioPlayer.clip = DiggingSoundFX;
+			audioPlayer.Play();
 			return true;
 		}
 		// Can remove gold increasing the gold counter
@@ -79,8 +94,10 @@ public class TrippyAgent : GridAgent
 		{
 			Grid.Remove(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer);
 			++GoldCounter;
+			CollectedGoldGUI.text = "Gold: " + GoldCounter;
 			// Play gold mining sound
-
+			audioPlayer.clip = GoldSoundFX;
+			audioPlayer.Play();
 			return true;
 		}
 		// Can eat mushrooms
@@ -89,7 +106,8 @@ public class TrippyAgent : GridAgent
 			Grid.Remove(CellCoords.X + x, CellCoords.Y + y, CellCoords.Layer);
 			++MushroomCounter;
 			// Play mushroom eating sound
-
+			audioPlayer.clip = MushroomSoundFX;
+			audioPlayer.Play();
 			return true;
 		}
 
