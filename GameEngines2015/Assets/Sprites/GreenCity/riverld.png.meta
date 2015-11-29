@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: a5b3eaa424e3654449a91af09140e75b
-timeCreated: 1448725118
+timeCreated: 1448793545
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -37,7 +37,7 @@ TextureImporter:
   textureFormat: -1
   maxTextureSize: 2048
   textureSettings:
-    filterMode: -1
+    filterMode: 0
     aniso: 16
     mipBias: -1
     wrapMode: 1
@@ -64,7 +64,7 @@ TextureImporter:
         x: 0
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -74,7 +74,7 @@ TextureImporter:
         x: 32
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -84,7 +84,7 @@ TextureImporter:
         x: 64
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -94,7 +94,7 @@ TextureImporter:
         x: 96
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -104,7 +104,7 @@ TextureImporter:
         x: 128
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -114,7 +114,7 @@ TextureImporter:
         x: 160
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,7 +124,7 @@ TextureImporter:
         x: 192
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,7 +134,7 @@ TextureImporter:
         x: 224
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

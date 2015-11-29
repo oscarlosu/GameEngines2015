@@ -505,7 +505,6 @@ public class RectangleGrid : MonoBehaviour
                                               ": layer " + (layer + 1) + ")");
                         }
                         Place(value, x, y, layer);
-                        Debug.Log("Placing: " + value + " at position (" + x + ", " + y + ", " + layer + ")");
                     }
                 }
             }

@@ -1,17 +1,17 @@
 fileFormatVersion: 2
-guid: b244ff416b6ea6d449ac5180717aec36
-timeCreated: 1448725147
+guid: 50beb09ac578eb340b84e97cdb01d576
+timeCreated: 1448793720
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: riverrl_0
-    21300002: riverrl_1
-    21300004: riverrl_2
-    21300006: riverrl_3
-    21300008: riverrl_4
-    21300010: riverrl_5
-    21300012: riverrl_6
-    21300014: riverrl_7
+    21300000: riverlr_0
+    21300002: riverlr_1
+    21300004: riverlr_2
+    21300006: riverlr_3
+    21300008: riverlr_4
+    21300010: riverlr_5
+    21300012: riverlr_6
+    21300014: riverlr_7
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -37,7 +37,7 @@ TextureImporter:
   textureFormat: -1
   maxTextureSize: 2048
   textureSettings:
-    filterMode: -1
+    filterMode: 0
     aniso: 16
     mipBias: -1
     wrapMode: 1
@@ -49,7 +49,7 @@ TextureImporter:
   spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 6
+  alignment: 0
   spritePivot: {x: .5, y: .5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 1
@@ -58,83 +58,83 @@ TextureImporter:
   buildTargetSettings: []
   spriteSheet:
     sprites:
-    - name: riverrl_0
+    - name: riverlr_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: riverrl_1
+    - name: riverlr_1
       rect:
         serializedVersion: 2
         x: 32
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: riverrl_2
+    - name: riverlr_2
       rect:
         serializedVersion: 2
         x: 64
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: riverrl_3
+    - name: riverlr_3
       rect:
         serializedVersion: 2
         x: 96
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: riverrl_4
+    - name: riverlr_4
       rect:
         serializedVersion: 2
         x: 128
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: riverrl_5
+    - name: riverlr_5
       rect:
         serializedVersion: 2
         x: 160
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: riverrl_6
+    - name: riverlr_6
       rect:
         serializedVersion: 2
         x: 192
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: riverrl_7
+    - name: riverlr_7
       rect:
         serializedVersion: 2
         x: 224
         y: 0
         width: 32
-        height: 32
+        height: 48
       alignment: 6
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
