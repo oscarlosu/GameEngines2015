@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: a5b3eaa424e3654449a91af09140e75b
-timeCreated: 1448793545
+timeCreated: 1448813001
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -71,7 +71,7 @@ TextureImporter:
     - name: riverld_1
       rect:
         serializedVersion: 2
-        x: 32
+        x: 33
         y: 0
         width: 32
         height: 48
@@ -81,7 +81,7 @@ TextureImporter:
     - name: riverld_2
       rect:
         serializedVersion: 2
-        x: 64
+        x: 66
         y: 0
         width: 32
         height: 48
@@ -91,7 +91,7 @@ TextureImporter:
     - name: riverld_3
       rect:
         serializedVersion: 2
-        x: 96
+        x: 99
         y: 0
         width: 32
         height: 48
@@ -101,7 +101,7 @@ TextureImporter:
     - name: riverld_4
       rect:
         serializedVersion: 2
-        x: 128
+        x: 132
         y: 0
         width: 32
         height: 48
@@ -111,7 +111,7 @@ TextureImporter:
     - name: riverld_5
       rect:
         serializedVersion: 2
-        x: 160
+        x: 165
         y: 0
         width: 32
         height: 48
@@ -121,7 +121,7 @@ TextureImporter:
     - name: riverld_6
       rect:
         serializedVersion: 2
-        x: 192
+        x: 198
         y: 0
         width: 32
         height: 48
@@ -131,7 +131,7 @@ TextureImporter:
     - name: riverld_7
       rect:
         serializedVersion: 2
-        x: 224
+        x: 231
         y: 0
         width: 32
         height: 48
