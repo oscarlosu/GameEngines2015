@@ -30,7 +30,6 @@ public class TrippyAgent : GridAgent
 	public int MushroomCounter;
 
 	private AudioSource audioPlayer;
-	private SpriteRenderer rend;
 
 	// Use this for initialization
 	new void Start ()
