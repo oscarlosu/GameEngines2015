@@ -24,7 +24,7 @@ public class GridAgent : MonoBehaviour
 	/// <summary>
 	/// The sprite renderer for the agent.
 	/// </summary>
-	private SpriteRenderer rend;
+	protected SpriteRenderer rend;
 
 	///<summary>
 	/// An enumeration of the posible movement directions in the horizontal plane (x, y)
