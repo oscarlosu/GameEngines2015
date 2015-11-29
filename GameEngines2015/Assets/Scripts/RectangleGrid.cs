@@ -260,28 +260,33 @@ public class RectangleGrid : MonoBehaviour
             Place(tile, x1, y1, layer1);
         }
     }
-
-    public void SetGridSize(int width, int depth, int height)
+	/// <summary>
+	/// Sets the size of the grid.
+	/// </summary>
+	/// <param name="nX">Number of cells in the x axis.</param>
+	/// <param name="nY">Number of cells iun the y axis.</param>
+	/// <param name="nLayers">Number of layers.</param>
+    public void SetGridSize(int nX, int nY, int nLayers)
     {
-        SizeX = width;
-        SizeY = depth;
-        for (int layer = 0; layer < height; layer++)
+        SizeX = nX;
+        SizeY = nY;
+        for (int layer = 0; layer < nLayers; layer++)
         {
             // If the layer already exists we want to resize it
             if (layer < grid.Count)
             {
-                if (layer < height)
+                if (layer < nLayers)
                 {
                     // Resize x, y
-                    short[,] resizedLayer = new short[width, depth];
-                    int maxX = Mathf.Max(width, grid[layer].GetLength(0));
-                    int maxY = Mathf.Max(depth, grid[layer].GetLength(1));
+                    short[,] resizedLayer = new short[nX, nY];
+                    int maxX = Mathf.Max(nX, grid[layer].GetLength(0));
+                    int maxY = Mathf.Max(nY, grid[layer].GetLength(1));
                     // Copy to resized layer or delete
                     for (int y = 0; y < maxY; y++)
                     {
                         for (int x = 0; x < maxX; x++)
                         {
-                            if (x < width && y < depth)
+                            if (x < nX && y < nY)
                             {
                                 if (x < grid[layer].GetLength(0) && y < grid[layer].GetLength(1))
                                 {
@@ -307,12 +312,12 @@ public class RectangleGrid : MonoBehaviour
             else
             {
                 // Add layer with width and depth size
-                short[,] newLayer = new short[width, depth];
+                short[,] newLayer = new short[nX, nY];
                 grid.Add(newLayer);
                 // Initialize layer cells to default/empty
-                for (int y = 0; y < depth; y++)
+                for (int y = 0; y < nY; y++)
                 {
-                    for (int x = 0; x < width; x++)
+                    for (int x = 0; x < nX; x++)
                     {
                         newLayer[x, y] = -1;
                     }
@@ -320,9 +325,9 @@ public class RectangleGrid : MonoBehaviour
             }
         }
         // Remove excess layers
-        if (grid.Count > height)
+        if (grid.Count > nLayers)
         {
-            for (int layer = height; layer < grid.Count; layer++)
+            for (int layer = nLayers; layer < grid.Count; layer++)
             {
                 for (int y = 0; y < grid[layer].GetLength(1); y++)
                 {
@@ -332,11 +337,20 @@ public class RectangleGrid : MonoBehaviour
                     }
                 }
             }
-            grid.RemoveRange(height, grid.Count - height);
+            grid.RemoveRange(nLayers, grid.Count - nLayers);
         }
         RendHandler.HideFromLayer(LayerCount);
     }
-
+	/// <summary>
+	/// Fills all the cells in between the given from and to cells (both inclusive) with the specified tile.
+	/// </summary>
+	/// <param name="tile">The tile that will be placed in the specified interval.</param>
+	/// <param name="fromX">Starting x coordinate.</param>
+	/// <param name="fromY">Starting y coordinate.</param>
+	/// <param name="fromLayer">Starting layer.</param>
+	/// <param name="toX">End x coordinate.</param>
+	/// <param name="toY">End y coordinate.</param>
+	/// <param name="toLayer">End layer.</param>
     public void FillRect(short tile, int fromX, int fromY, int fromLayer, int toX, int toY, int toLayer)
     {
         if (IsInitialized() && IsInsideGrid(fromX, fromY, fromLayer) && IsInsideGrid(toX, toY, toLayer))
@@ -361,7 +375,15 @@ public class RectangleGrid : MonoBehaviour
             }
         }
     }
-
+	/// <summary>
+	/// Removes all the cells in between the given from and to cells (both inclusive).
+	/// </summary>
+	/// <param name="fromX">Starting x coordinate.</param>
+	/// <param name="fromY">Starting y coordinate.</param>
+	/// <param name="fromLayer">From layer.</param>
+	/// <param name="toX">End x coordinate.</param>
+	/// <param name="toY">End y coordinate.</param>
+	/// <param name="toLayer">End layer.</param>
     public void RemoveRect(int fromX, int fromY, int fromLayer, int toX, int toY, int toLayer)
     {
         if (IsInitialized() && IsInsideGrid(fromX, fromY, fromLayer) && IsInsideGrid(toX, toY, toLayer))
@@ -385,7 +407,18 @@ public class RectangleGrid : MonoBehaviour
             }
         }
     }
-
+	/// <summary>
+	/// Moves all the cells in the specified source interval to the specified destination interval in the grid.
+	/// </summary>
+	/// <param name="sourceFromX">Source starting x coordinate.</param>
+	/// <param name="sourceFromY">Source starting y coordinate.</param>
+	/// <param name="sourceFromLayer">Source starting layer.</param>
+	/// <param name="sourceToX">Source end x coordinate.</param>
+	/// <param name="sourceToY">Source end y coordinate.</param>
+	/// <param name="sourceToLayer">Source to layer.</param>
+	/// <param name="destFromX">Destination starting x coordinate.</param>
+	/// <param name="destFromY">Destination starting y coordinate.</param>
+	/// <param name="destFromLayer">Destination starting layer.</param>
     public void MoveRect(int sourceFromX, int sourceFromY, int sourceFromLayer, int sourceToX, int sourceToY, int sourceToLayer, int destFromX, int destFromY, int destFromLayer)
     {
         if (IsInitialized() &&
@@ -404,7 +437,9 @@ public class RectangleGrid : MonoBehaviour
             }
         }
     }
-
+	/// <summary>
+	/// Adds a layer after the last layer in the grid.
+	/// </summary>
     public void AddLayer()
     {
         short[,] newLayer = new short[grid[0].GetLength(0), grid[0].GetLength(1)];
@@ -419,7 +454,10 @@ public class RectangleGrid : MonoBehaviour
         }
 
     }
-
+	/// <summary>
+	/// Removes the layer indicated by the specified index.
+	/// </summary>
+	/// <param name="layerIndex">Layer index.</param>
     public void RemoveLayer(int layerIndex)
     {
         if (IsInitialized() && layerIndex < grid.Count)
@@ -441,7 +479,11 @@ public class RectangleGrid : MonoBehaviour
             //}
         }
     }
-
+	/// <summary>
+	/// Swaps the layers witht the specified indices.
+	/// </summary>
+	/// <param name="layerIndex1">Index of the first layer.</param>
+	/// <param name="layerIndex2">ndex of the second layer.</param>
     public void SwapLayers(int layerIndex1, int layerIndex2)
     {
         if (IsInitialized() && layerIndex1 < grid.Count && layerIndex2 < grid.Count)
@@ -519,6 +561,10 @@ public class RectangleGrid : MonoBehaviour
     * SAVE/LOAD
     ****************/
 
+	/// <summary>
+	/// Loads the grid from the specified file.
+	/// </summary>
+	/// <param name="filePath">File path.</param>
     public void LoadGridFromFile(string filePath)
     {
         if (!File.Exists(filePath))
@@ -607,7 +653,12 @@ public class RectangleGrid : MonoBehaviour
         stopwatch.Stop();
         Debug.Log("Loading done (" + stopwatch.Elapsed + ")");
     }
-
+	/// <summary>
+	/// Coroutine that saves the grid to the specified file.
+	/// </summary>
+	/// <param name="filePath">File path.</param>
+	/// <param name="overwrite">If set to <c>true</c> overwrites the contents of the specified file.</param>
+	/// <param name="callBack">Call back.</param>
     public IEnumerator SaveGridToFileCoroutine(string filePath, bool overwrite = true, Action callBack = null)
     {
         if (LayerCount <= 0 || SizeX <= 0 || SizeY <= 0)
