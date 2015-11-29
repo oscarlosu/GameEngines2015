@@ -2,19 +2,45 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
-using System.Diagnostics;
+using Stopwatch = System.Diagnostics.Stopwatch;
 using System.Linq;
 using System.IO;
 using System.Text;
 using UnityEditor;
-using Debug = UnityEngine.Debug;
 
+/// <summary>
+/// This class represents a grid that can hold tiles and game objects.
+/// </summary>
 public class RectangleGrid : MonoBehaviour
 {
-    public int CellWidth, CellDepth, CellHeight;
+	/// <summary>
+	/// The width of the cells.
+	/// </summary>
+	public int CellWidth;
+	/// <summary>
+	/// The depth of the cells.
+	/// </summary>
+	public int CellDepth;
+	/// <summary>
+	/// The height of the cell.
+	/// </summary>
+	public int CellHeight;
+	/// <summary>
+	/// The rendering handler. This class takes care of rendering only the tiles that are inside the camera view at any given point.
+	/// </summary>
     public RenderingHandler RendHandler;
+	/// <summary>
+	/// The actual grid that holds the tiles
+	/// </summary>
     public List<short[,]> grid = new List<short[,]>();
+	/// <summary>
+	/// The game objects are stored in a dictionary using their position in the grid for rapid access.
+	/// </summary>
     private Dictionary<GridPosition, GameObject> gameObjects = new Dictionary<GridPosition, GameObject>();
+	/// <summary>
+	/// Gets the layer count.
+	/// </summary>
+	/// <value>The layer count.</value>
     public int LayerCount
     {
         get
@@ -22,20 +48,40 @@ public class RectangleGrid : MonoBehaviour
             return grid.Count;
         }
     }
+	/// <summary>
+	/// Gets the size of the grid in the x axis.
+	/// </summary>
+	/// <value>The size x.</value>
     public int SizeX { get; private set; }
+	/// <summary>
+	/// Gets the size of the grid in the y axis.
+	/// </summary>
+	/// <value>The size y.</value>
     public int SizeY { get; private set; }
 
-
+	/// <summary>
+	/// Determines whether this instance is initialized.
+	/// </summary>
+	/// <returns><c>true</c> if this instance is initialized; otherwise, <c>false</c>.</returns>
     private bool IsInitialized()
     {
         return grid.Count > 0;
     }
-
+	/// <summary>
+	/// Determines whether the given cell coords are inside the grid.
+	/// </summary>
+	/// <returns><c>true</c> if the cell is inside the grid; otherwise, <c>false</c>.</returns>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="y">The y coordinate.</param>
+	/// <param name="layer">The layer.</param>
     public bool IsInsideGrid(int x, int y, int layer)
     {
         return layer >= 0 && x >= 0 && y >= 0 && layer < grid.Count && x < grid[layer].GetLength(0) && y < grid[layer].GetLength(1);
     }
-
+	/// <summary>
+	/// Makes the rendering handler update all the cells in the given layer.
+	/// </summary>
+	/// <param name="layerIndex">Layer index.</param>
     private void UpdateRendererLayer(int layerIndex)
     {
         for (int x = 0; x < grid[layerIndex].GetLength(0); ++x)
@@ -46,13 +92,14 @@ public class RectangleGrid : MonoBehaviour
             }
         }
     }
-
-    //private void UpdateRendererCell(int x, int y, int layer)
-    //{
-    //    // Unnecessary?
-    //    throw new System.NotImplementedException();
-    //}
-
+	/// <summary>
+	/// Tries to the get a tile from the grid at the given cell coordinates.
+	/// </summary>
+	/// <returns><c>true</c>, if there was a tile in the cell, <c>false</c> otherwise.</returns>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="y">The y coordinate.</param>
+	/// <param name="layer">The layer.</param>
+	/// <param name="tile">The tile at specified coordinates.</param>
     public bool TryGetTile(int x, int y, int layer, out short tile)
     {
         if (IsInsideGrid(x, y, layer) && grid[layer][x, y] != -1)
@@ -66,18 +113,38 @@ public class RectangleGrid : MonoBehaviour
             return false;
         }
     }
-
+	/// <summary>
+	/// Tries to the get a game object from the grid at the specified coordinates.
+	/// </summary>
+	/// <returns><c>true</c>, if get object was tryed, <c>false</c> otherwise.</returns>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="y">The y coordinate.</param>
+	/// <param name="layer">The layer.</param>
+	/// <param name="obj">The Game Object at the specified coordinates.</param>
     public bool TryGetObject(int x, int y, int layer, out GameObject obj)
     {
         return gameObjects.TryGetValue(new GridPosition(x, y, layer), out obj);
     }
-
+	/// <summary>
+	/// Determines whether the grid has a tile or an object in the specified cell.
+	/// </summary>
+	/// <returns><c>true</c> if the grid doesnt have a tile or an object in the cell; otherwise, <c>false</c>.</returns>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="y">The y coordinate.</param>
+	/// <param name="layer">The layer.</param>
     public bool IsCellFree(int x, int y, int layer)
     {
         short tile;
-        return !TryGetTile(x, y, layer, out tile);
+		GameObject obj;
+		return !TryGetTile(x, y, layer, out tile) && !TryGetObject(x, y, layer, out obj);
     }
-
+	/// <summary>
+	/// Place the specified Game Object at the specified cell in the grid.
+	/// </summary>
+	/// <param name="obj">Game Object to be placed in the grid.</param>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="y">The y coordinate.</param>
+	/// <param name="layer">The layer.</param>
     public void Place(GameObject obj, int x, int y, int layer)
     {
         // Clear the dest cell
@@ -92,7 +159,13 @@ public class RectangleGrid : MonoBehaviour
             rend.sortingOrder = layer - y;
         }
     }
-
+	/// <summary>
+	/// Place the specified tile at the specified cell in the grid. Removes anything that was at the given cell before.
+	/// </summary>
+	/// <param name="tile">The tile to be placed in the grid.</param>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="y">The y coordinate.</param>
+	/// <param name="layer">The layer.</param>
     public void Place(short tile, int x, int y, int layer)
     {
         // Clear dest cell
@@ -102,7 +175,15 @@ public class RectangleGrid : MonoBehaviour
         RendHandler.UpdateCell(x, y, layer);
         //RendHandler.LoadCell(x, y, layer);
     }
-
+	/// <summary>
+	/// Moves the content of the specified source cell to the specified destination cell. Removes anything at the given destiantion cell.
+	/// </summary>
+	/// <param name="sourceX">Source x coordinate.</param>
+	/// <param name="sourceY">Source y coordiante.</param>
+	/// <param name="sourceLayer">Source layer.</param>
+	/// <param name="destX">Destination x coordinate.</param>
+	/// <param name="destY">Destination y coordinate.</param>
+	/// <param name="destLayer">Destination layer.</param>
     public void Move(int sourceX, int sourceY, int sourceLayer, int destX, int destY, int destLayer)
     {
         GridPosition sourcePos = new GridPosition(sourceX, sourceY, sourceLayer);
@@ -120,7 +201,12 @@ public class RectangleGrid : MonoBehaviour
             Remove(sourceX, sourceY, sourceLayer);
         }
     }
-
+	/// <summary>
+	/// Remove the any tile or Game Object held by the grid at specified cell.
+	/// </summary>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="y">The y coordinate.</param>
+	/// <param name="layer">The layer.</param>
     public void Remove(int x, int y, int layer)
     {
         GridPosition pos = new GridPosition(x, y, layer);
@@ -139,7 +225,15 @@ public class RectangleGrid : MonoBehaviour
             //RendHandler.UnloadCell(x, y, layer);
         }
     }
-
+	/// <summary>
+	/// Swap the content of the specified cells.
+	/// </summary>
+	/// <param name="x1">The first x coordinate.</param>
+	/// <param name="y1">The first y coordinate.</param>
+	/// <param name="layer1">The first layer.</param>
+	/// <param name="x2">The second x coordinate.</param>
+	/// <param name="y2">The second y coordinate.</param>
+	/// <param name="layer2">The second layer.</param>
     public void Swap(int x1, int y1, int layer1, int x2, int y2, int layer2)
     {
         // Copy and clear x2, y2, layer2
