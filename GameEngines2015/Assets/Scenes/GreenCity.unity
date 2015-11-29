@@ -224,7 +224,6 @@ MonoBehaviour:
   - Tile:
     - {fileID: 21300000, guid: 904672c85b692284c8ffcc2144709b95, type: 3}
   NonViewObstructingTiles: 0100000002000000060000000700000008000000
-  RenderHidden: 0
   BufferX: 2
   BufferY: 2
   CurrentLightingMode: 0
@@ -234,7 +233,6 @@ MonoBehaviour:
   NightColourMultipliers: {x: .400000006, y: .400000006, z: 1}
   MaxTint: .5
   TintIncrease: .0599999987
-  lowestHiddenLayer: 0
   AnimationNextTime: .0500000007
   cam: {fileID: 0}
 --- !u!114 &476286095

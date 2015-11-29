@@ -1,6 +1,11 @@
 ﻿
 using System;
 
+
+/// <summary>
+/// A grid position represents a position in a grid.
+/// It works much like and integer version of the Vector3 class.
+/// </summary>
 [Serializable]
 public struct GridPosition
 {
