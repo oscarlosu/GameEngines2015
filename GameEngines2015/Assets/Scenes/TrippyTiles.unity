@@ -186,24 +186,34 @@ MonoBehaviour:
   Tiles:
   - Tile:
     - {fileID: 21300062, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
+    Randomize: 0
   - Tile:
     - {fileID: 21300070, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
+    Randomize: 0
   - Tile:
     - {fileID: 21300006, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
+    Randomize: 0
   - Tile:
     - {fileID: 21300022, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
+    Randomize: 1
   - Tile:
     - {fileID: 21300052, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
+    Randomize: 0
   - Tile:
     - {fileID: 21300036, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
+    Randomize: 0
   - Tile:
     - {fileID: 21300026, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
+    Randomize: 0
   - Tile:
     - {fileID: 21300014, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
+    Randomize: 0
   - Tile:
     - {fileID: 21300038, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
+    Randomize: 0
   - Tile:
     - {fileID: 21300042, guid: 98cf844e63046b34c9803dd29019a92b, type: 3}
+    Randomize: 0
   NonViewObstructingTiles: 0100000002000000060000000700000008000000
   BufferX: 2
   BufferY: 2
