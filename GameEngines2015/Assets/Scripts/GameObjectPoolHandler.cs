@@ -2,7 +2,7 @@
 using System.Collections;
 
 /// <summary>
-/// Game object pool handler.
+/// This class handles a pool of game objects with sprite renderers that are used to render the grid 
 /// </summary>
 /// 
 /// The singleton implementation in this script was taken from http://wiki.unity3d.com/index.php/Singleton
@@ -30,6 +30,7 @@ public class GameObjectPoolHandler : GenericGameObjectPoolHandler<Vector3>
 				if (_instance == null)
 				{
 					_instance = (GameObjectPoolHandler) FindObjectOfType(typeof(GameObjectPoolHandler));
+					base.Initialize();
 					
 					if ( FindObjectsOfType(typeof(GameObjectPoolHandler)).Length > 1 )
 					{
