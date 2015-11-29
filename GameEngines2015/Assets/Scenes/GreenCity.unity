@@ -218,7 +218,13 @@ MonoBehaviour:
     - {fileID: 21300004, guid: 50beb09ac578eb340b84e97cdb01d576, type: 3}
     - {fileID: 21300002, guid: 50beb09ac578eb340b84e97cdb01d576, type: 3}
     - {fileID: 21300000, guid: 50beb09ac578eb340b84e97cdb01d576, type: 3}
-  NonViewObstructingTiles: 0200000003000000
+  - Tile:
+    - {fileID: 21300000, guid: 821fef294e6967b4aa5ec401be295c9d, type: 3}
+  - Tile:
+    - {fileID: 21300000, guid: 6700c46b20ce3494cb96c95529de5e89, type: 3}
+  - Tile:
+    - {fileID: 21300000, guid: 904672c85b692284c8ffcc2144709b95, type: 3}
+  NonViewObstructingTiles: 0100000002000000060000000700000008000000
   RenderHidden: 0
   BufferX: 2
   BufferY: 2
@@ -308,7 +314,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 300
+  orthographic size: 400
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -359,12 +365,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1189112370}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1c30088fec71eb4289b6a846895544c, type: 3}
+  m_Script: {fileID: 11500000, guid: 5639d0438aee5aa4a9e45af9440da38d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Grid: {fileID: 476286092}
-  CellCoords: {x: 0, y: 0, z: 0}
-  NotWalkableTileIndexes: 
+  CellCoords: {x: 1, y: 1, z: 1}
+  NotWalkableTileIndexes: ffffffff
+  Grid: {fileID: 476286092}
+  RiverTileIndexes: 030004000500
 --- !u!212 &1189112372
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -398,7 +406,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1189112370}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3978.56348, y: 675.478699, z: 0}
+  m_LocalPosition: {x: 80, y: 80, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
