@@ -4,7 +4,7 @@ using UnityEditor;
 public class GridEditor : MonoBehaviour
 {
 
-    [MenuItem("GameObject/Oscillip/Rectangle Grid %g", false, 10)]
+    [MenuItem("GameObject/Grid Engine/Rectangle Grid %g", false, 10)]
     static void CreateRectangleGrid()
     {
         GameObject go = new GameObject("RectangleGrid");
@@ -20,7 +20,6 @@ public class GridEditor : MonoBehaviour
         // Set up rendHandler with necessities and defaults.
         ////////////////////////////////////////////////////
         rendHandler.HandledGrid = grid;
-        //rendHandler.RendererPool = objectPool;
 
         // Buffers.
         rendHandler.BufferX = 2;
