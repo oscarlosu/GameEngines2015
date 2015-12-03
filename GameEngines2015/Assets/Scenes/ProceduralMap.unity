@@ -125,12 +125,16 @@ MonoBehaviour:
   Seed: 0
   Tile1:
     Tile: []
+    Randomize: 0
   Tile2:
     Tile: []
+    Randomize: 0
   Tile3:
     Tile: []
+    Randomize: 0
   Tile4:
     Tile: []
+    Randomize: 0
 --- !u!4 &454472806
 Transform:
   m_ObjectHideFlags: 0
@@ -202,10 +206,11 @@ MonoBehaviour:
   Tiles:
   - Tile:
     - {fileID: 21300018, guid: be65ed526244d264cbdec818845988a4, type: 3}
+    Randomize: 0
   - Tile:
     - {fileID: 21300032, guid: be65ed526244d264cbdec818845988a4, type: 3}
+    Randomize: 0
   NonViewObstructingTiles: 
-  RenderHidden: 0
   BufferX: 2
   BufferY: 2
   CurrentLightingMode: 0
@@ -215,9 +220,8 @@ MonoBehaviour:
   NightColourMultipliers: {x: .400000006, y: .400000006, z: 1}
   MaxTint: .5
   TintIncrease: .0599999987
-  lowestHiddenLayer: 0
   AnimationNextTime: .5
-  cam: {fileID: 0}
+  Cam: {fileID: 0}
 --- !u!1 &589726515
 GameObject:
   m_ObjectHideFlags: 0
@@ -354,6 +358,10 @@ Prefab:
     - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
       propertyPath: AgentType
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11409346, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
+      propertyPath: CellCoords.Layer
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 888afbac27acaa4458b9c18d6ee40605, type: 2}
