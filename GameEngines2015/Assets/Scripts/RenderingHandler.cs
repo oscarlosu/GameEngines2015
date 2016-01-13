@@ -186,6 +186,7 @@ public class RenderingHandler : MonoBehaviour
             // Load
             for (int y = (int)firstCell[layer].y; y < firstCell[layer].y + sizeY; ++y)
             {
+                // TODO Skip whole load section, if layer is hidden (move outside "y" for loop).
                 // Skip all the layers that are hidden
                 if (layer >= lowestHiddenLayer)
                 {
@@ -212,6 +213,7 @@ public class RenderingHandler : MonoBehaviour
                 }
             }
         }
+        // TODO Remove debugs, since they slow down execution with each movement of the camera.
         Debug.Log("MoveUnload iterations count: " + countUnload);
         Debug.Log("MoveLoad iterations count: " + countLoad);
     }
@@ -263,6 +265,7 @@ public class RenderingHandler : MonoBehaviour
                 }
             }
         }
+        // TODO Remove debugs.
         Debug.Log("ZoomLoad iterations count: " + count);
     }
 
@@ -300,6 +303,7 @@ public class RenderingHandler : MonoBehaviour
                 }
             }
         }
+        // TODO Remove debugs.
         Debug.Log("ZoomUnload iterations count: " + count);
     }
 
@@ -410,7 +414,7 @@ public class RenderingHandler : MonoBehaviour
                 break;
         }
         // Make sure nothing becomes black.
-        if (tintVal < MaxTint) tintVal = MaxTint;
+        if (tintVal < MaxTint) tintVal = MaxTint; // TODO The if should be (tintVal < 1 - MaxTint).
         float tintValR, tintValG, tintValB;
 
         // If midday, just add the tint value as is to all colours.
@@ -444,7 +448,7 @@ public class RenderingHandler : MonoBehaviour
     }
 
     /// <summary>
-    /// Find the first cell in the given layer.
+    /// Saves the first cell of a given layer and returns the old first cell.
     /// </summary>
     /// <param name="layer">The layer.</param>
     /// <returns>A Vector2 with the coordinates of the first cell in this layer.</returns>
@@ -470,6 +474,10 @@ public class RenderingHandler : MonoBehaviour
         return old;
     }
 
+    /// <summary>
+    /// Updates the variables (sizeX, sizeY) that hold how many tiles
+    /// are rendered per layer in width and in height.
+    /// </summary>
     private void UpdateSizeXY()
     {
         float camHalfWidth = Cam.aspect * Cam.orthographicSize;

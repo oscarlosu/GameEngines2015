@@ -42,11 +42,13 @@ public abstract class GenericGameObjectPoolHandler<KeyType> : MonoBehaviour
 	/// The current total size of the pool.
 	/// </summary>
 	protected int poolSize;
-	/// <summary>
-	/// A log of the size of the active pool over a period of time. The <see cref="SamplePoolSize"/> method stores values here and the <see cref="PredictPoolSize"/>
-	/// method uses this information to adjust the size of the pool dinamically.
-	/// </summary>
-	protected List<int> poolSizeHistory;
+    /// <summary>
+    /// A log of the size of the active pool over a period of time. The <see cref="SamplePoolSize"/> method
+    /// stores values here and the <see cref="PredictPoolSize"/>
+    /// method uses this information to adjust the size of the pool dynamically.
+    /// The history is emptied after each call to the <see cref="PredictPoolSize"/> method.
+    /// </summary>
+    protected List<int> poolSizeHistory;
 	
 	/// <summary>
 	/// Initialize the pool with <paramref name="DefaultSize"/> <paramref name="PoolObjectPrefab"/> in the inactive pool.
@@ -159,7 +161,8 @@ public abstract class GenericGameObjectPoolHandler<KeyType> : MonoBehaviour
 			sd /= poolSizeHistory.Count;
 			int predictedSize = avg + (int)(sd * BufferFactor);
 			poolSizeHistory.Clear ();
-			// Reduce pool size if the predicted size is smaller than the current pool size and the inactive pool is not empty
+            // Reduce pool size if the predicted size is smaller than the current pool size and the
+            // inactive pool is not empty
 			while(inactivePool.Count > 0 && predictedSize < poolSize)
 			{
 				// Remove pool object from the inactive pool and destroy it

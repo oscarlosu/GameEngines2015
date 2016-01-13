@@ -479,6 +479,8 @@ public class RectangleGrid : MonoBehaviour
             //{
             //    UpdateLayerPositions(layer);
             //}
+
+            // TODO Rerender all above layers.
         }
     }
 	/// <summary>
